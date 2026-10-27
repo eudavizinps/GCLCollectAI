@@ -1,0 +1,23 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      API_HOST: 0.0.0.0
+      FRONTEND_ORIGIN: http://localhost:5173
+      AI_PROVIDER: demo
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/data:/code/backend/data
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    environment:
+      VITE_API_PROXY_TARGET: http://api:8000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api
