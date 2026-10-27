@@ -31,16 +31,16 @@ O seed não substitui dados existentes. Para recriar o ambiente fictício, execu
 
 ## Credenciais locais de demonstração
 
-| Empresa | Perfil | E-mail | Senha |
+| Empresa | Perfil | E-mail | 
 | --- | --- | --- | --- |
-| Aurora | Administrador | `admin1@demo.collectai.local` | `Demo@12345` |
-| Aurora | Superadministrador | `superadmin1@demo.collectai.local` | `Demo@12345` |
-| Aurora | Supervisor | `supervisor1@demo.collectai.local` | `Demo@12345` |
-| Aurora | Operador | `operator1@demo.collectai.local` | `Demo@12345` |
-| Horizonte | Administrador | `admin2@demo.collectai.local` | `Demo@12345` |
-| Horizonte | Superadministrador | `superadmin2@demo.collectai.local` | `Demo@12345` |
-| Horizonte | Supervisor | `supervisor2@demo.collectai.local` | `Demo@12345` |
-| Horizonte | Operador | `operator2@demo.collectai.local` | `Demo@12345` |
+| Aurora | Administrador | `admin1@demo.collectai.local` | 
+| Aurora | Superadministrador | `superadmin1@demo.collectai.local` | 
+| Aurora | Supervisor | `supervisor1@demo.collectai.local` | 
+| Aurora | Operador | `operator1@demo.collectai.local` | 
+| Horizonte | Administrador | `admin2@demo.collectai.local` |
+| Horizonte | Superadministrador | `superadmin2@demo.collectai.local` | 
+| Horizonte | Supervisor | `supervisor2@demo.collectai.local` |
+| Horizonte | Operador | `operator2@demo.collectai.local` |
 
 Essas credenciais são apenas para desenvolvimento local. Nunca exponha esta instância ou use dados reais nela.
 
