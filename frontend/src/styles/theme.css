@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+:root {
+  font-family: Inter, Arial, sans-serif;
+  --background: #090611; --background-secondary: #110b1e; --surface: #171024; --surface-elevated: #211532; --surface-hover: #2b1c40;
+  --primary: #9955f6; --primary-dark: #6d32bb; --primary-light: #c39aff; --glow: #b77cff;
+  --text-primary: #f5f0ff; --text-secondary: #a99dba; --border: #352449;
+  --success: #22c55e; --warning: #f59e0b; --danger: #ef4444;
+  --gradient-primary: linear-gradient(135deg, #6d32bb, #9955f6 60%, #c39aff);
+  --shadow: 0 14px 40px rgba(3, 1, 11, .22); --radius: 16px;
+  color: var(--text-primary); background: var(--background);
+}
+:root[data-theme="light"] { --background: #f5f1fb; --background-secondary: #eee6f8; --surface: #fff; --surface-elevated: #f9f5ff; --surface-hover: #eee4fb; --text-primary: #241334; --text-secondary: #675975; --border: #dfd0ef; --shadow: 0 14px 40px rgba(61, 28, 96, .1) }
