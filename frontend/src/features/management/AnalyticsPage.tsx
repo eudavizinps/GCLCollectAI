@@ -1,0 +1,12 @@
+import { useEffect, useState } from 'react'
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { PageHeader } from '../../components/shared/PageHeader'
+import { ErrorState, LoadingState } from '../../components/shared/States'
+import { get } from '../../services/api'
+
+type Metrics = { recovered: string; total_collection: string; recovery_rate: number; active_agreements: number; overdue_titles: number; by_portfolio: { id: string; value: string }[]; trend: { month: string; value: string }[] }
+export function AnalyticsPage() {
+  const [data, setData] = useState<Metrics | null>(null); const [error, setError] = useState('')
+  useEffect(() => { get<Metrics>('/dashboard/overview').then(setData).catch(err => setError(err.message)) }, [])
+  return <><PageHeader eyebrow="GESTÃO / ANALYTICS" title="Analytics" description="Indicadores calculados diretamente sobre os registros da empresa."/>{error && <ErrorState message={error}/>} {!data ? <LoadingState/> : <><div className="stats-grid four"><div className="stat-card"><span>Recuperado</span><strong>R$ {Number(data.recovered).toLocaleString('pt-BR')}</strong></div><div className="stat-card"><span>Taxa de recuperação</span><strong>{data.recovery_rate}%</strong></div><div className="stat-card"><span>Acordos ativos</span><strong>{data.active_agreements}</strong></div><div className="stat-card"><span>Títulos vencidos</span><strong>{data.overdue_titles}</strong></div></div><div className="dashboard-grid"><div className="panel chart-panel"><h2>Recuperação financeira</h2>{data.trend.length ? <ResponsiveContainer width="100%" height={280}><BarChart data={data.trend.map(item => ({ month: item.month, value: Number(item.value) }))}><CartesianGrid vertical={false} stroke="#352449"/><XAxis dataKey="month"/><YAxis/><Tooltip/><Bar dataKey="value" fill="#9955f6" radius={[6,6,0,0]}/></BarChart></ResponsiveContainer> : <div className="chart-empty">Sem pagamentos confirmados.</div>}</div><div className="panel chart-panel"><h2>Saldo por carteira</h2><ResponsiveContainer width="100%" height={280}><BarChart data={data.by_portfolio.map((item, index) => ({ name: `Carteira ${index+1}`, value: Number(item.value) }))}><CartesianGrid vertical={false} stroke="#352449"/><XAxis dataKey="name"/><YAxis/><Tooltip/><Bar dataKey="value" fill="#6d32bb" radius={[6,6,0,0]}/></BarChart></ResponsiveContainer></div></div></>}</>
+}
