@@ -1,6 +1,8 @@
 # Deploy automático pelo GitHub
 
-O Worker `collectai-demo` já foi publicado na conta Cloudflare `15705ccefdfbf96076615920c8f680ac`. Para que os próximos pushes para `main` publiquem automaticamente, conecte o repositório `eudavizinps/GCLCollectAI` ao Worker existente no painel Cloudflare:
+O Worker `collectai-demo` está publicado na conta Cloudflare `15705ccefdfbf96076615920c8f680ac`. O repositório `eudavizinps/GCLCollectAI` está conectado à branch de produção `main`, com builds ativados. Um commit de teste gerou e ativou uma nova versão em 27/10/2026.
+
+Para conferir ou refazer essa ligação no painel Cloudflare:
 
 1. Abra **Workers & Pages → collectai-demo → Settings → Builds → Connect**.
 2. Escolha **GitHub**, o repositório **eudavizinps/GCLCollectAI** e a branch **main**.
@@ -11,4 +13,4 @@ O Worker `collectai-demo` já foi publicado na conta Cloudflare `15705ccefdfbf96
 
 O script de build copia somente a API, a configuração do Worker e o `dist` do frontend para uma pasta ignorada pelo Git. O build remoto usa o `uv` e o Python fornecidos pela imagem oficial de Workers Builds. O nome em `cloudflare/wrangler.jsonc` é `collectai-demo`, igual ao Worker existente.
 
-A ligação exige a permissão **Workers Builds Configuration**. O token OAuth do Wrangler usado para publicar não possui essa permissão; por isso essa configuração final precisa ser feita no painel da conta. Até ela ser salva e um build passar, os commits no GitHub não acionam deploy automático deste Worker.
+A ligação foi salva pelo proprietário no painel da conta. O token OAuth do Wrangler usado para a publicação manual não possui a permissão **Workers Builds Configuration**; alterações futuras nessa configuração devem ser feitas no painel ou com um token de API apropriado.
