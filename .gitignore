@@ -6,6 +6,17 @@ frontend/playwright-report/
 frontend/test-results/
 backend/.deps/
 backend/.venv/
+backend/.venv-workers/
+backend/.cloudflare-tools/
+backend/.uv-cache/
+backend/.uv-python/
+backend/python_modules/
+backend/pylock.toml
+.cloudflare-dev/
+.wrangler/
+cloudflare/.venv/
+backend/.wrangler/
+backend/uv.lock
 backend/data/*.json
 backend/data/*.lock
 **/__pycache__/

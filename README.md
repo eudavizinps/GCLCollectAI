@@ -10,7 +10,7 @@ MVP local de gestão de cobrança para duas empresas fictícias, com API FastAPI
 ## Início rápido no Windows (PowerShell)
 
 ```powershell
-python -m pip install --target backend/.deps -r backend/requirements.txt
+python -m pip install --target backend/.deps -r backend/requirements-local.txt
 python scripts/seed_demo.py
 python scripts/run_api.py
 ```
@@ -42,7 +42,13 @@ O seed não substitui dados existentes. Para recriar o ambiente fictício, execu
 | Horizonte | Supervisor | `supervisor2@demo.collectai.local` |
 | Horizonte | Operador | `operator2@demo.collectai.local` |
 
-Essas credenciais são apenas para desenvolvimento local. Nunca exponha esta instância ou use dados reais nela.
+Essas credenciais são públicas e destinam-se somente à demonstração com dados fictícios. Não use dados reais, senhas pessoais ou documentos verdadeiros nesta instância.
+
+## Demonstração no Cloudflare
+
+O Worker em `cloudflare/wrangler.jsonc` executa a API FastAPI e serve o build React no mesmo endereço. Um Durable Object guarda alterações feitas na demonstração entre reinicializações. Os dados iniciais são fictícios e gerados por `python scripts/export_cloudflare_seed.py`.
+
+No Windows, execute `powershell.exe -ExecutionPolicy Bypass -File scripts/cloudflare.ps1 -Action dev` para testar em `http://127.0.0.1:8787`. Após autorizar o Wrangler com `-Action login`, publique com `-Action deploy`. O script contorna um problema do pywrangler com espaços no caminho do usuário criando temporariamente a unidade `X:`. Veja [instruções de publicação](docs/CLOUDFLARE_DEMO.md).
 
 ## Estrutura
 
@@ -65,7 +71,7 @@ Veja `.env.example`. `AI_PROVIDER=demo` funciona sem chave externa. Outros valor
 
 O produto ainda não inclui PostgreSQL, integração bancária, envio de mensagens, provedor LLM real, recuperação de senha por e-mail, editor de políticas financeiras, exportação PDF dedicada nem testes Playwright. As páginas e fluxos principais existem, mas algumas telas de gestão têm recursos parciais. Veja [matriz de funcionalidades](docs/FEATURE_MATRIX.md) e [status de build](docs/BUILD_STATUS.md).
 
-O cookie de sessão usa `HttpOnly` e `SameSite=Lax`. A opção `Secure` está desativada somente porque a execução local usa HTTP. Para produção, use HTTPS, cookie `Secure`, proteção CSRF apropriada, gestão de segredos e banco transacional.
+O cookie de sessão usa `HttpOnly` e `SameSite=Lax`; em HTTPS também usa `Secure`. A demonstração no Cloudflare ainda não é um serviço apto a receber dados reais. Antes de operação real, são necessários autenticação e proteção de acesso adequadas, gestão de segredos, proteção CSRF, banco transacional e revisão de segurança.
 
 ## Migração futura
 

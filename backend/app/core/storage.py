@@ -1,5 +1,6 @@
 """Atomic JSON adapter. Domain code receives dictionaries, never file paths."""
 from contextlib import contextmanager
+from contextvars import ContextVar
 from copy import deepcopy
 from pathlib import Path
 import json
@@ -11,6 +12,27 @@ from typing import Callable, TypeVar
 from app.core.config import DATA_PATH
 
 T = TypeVar("T")
+_durable_storage: ContextVar[object | None] = ContextVar("durable_storage", default=None)
+_DURABLE_KEY = "collectai-demo-v3"
+
+
+def bind_durable_storage(storage: object):
+    """Bind one Durable Object's storage to the current ASGI request."""
+    return _durable_storage.set(storage)
+
+
+def unbind_durable_storage(token) -> None:
+    _durable_storage.reset(token)
+
+
+def _durable_read(storage: object) -> dict:
+    raw = storage.kv.get(_DURABLE_KEY)
+    if raw is None:
+        from app.core.demo_seed import INITIAL_JSON
+
+        raw = INITIAL_JSON
+        storage.kv.put(_DURABLE_KEY, raw)
+    return json.loads(str(raw))
 
 
 @contextmanager
@@ -41,10 +63,21 @@ def _read() -> dict:
 
 
 def read() -> dict:
+    durable = _durable_storage.get()
+    if durable is not None:
+        return _durable_read(durable)
     return deepcopy(_read())
 
 
 def change(operation: Callable[[dict], T]) -> T:
+    durable = _durable_storage.get()
+    if durable is not None:
+        # There is no await between the read and write inside this one Durable
+        # Object, so another request cannot interleave a financial transition.
+        data = _durable_read(durable)
+        result = operation(data)
+        durable.kv.put(_DURABLE_KEY, json.dumps(data, ensure_ascii=False, default=str))
+        return result
     DATA_PATH.parent.mkdir(parents=True, exist_ok=True)
     with _lock(DATA_PATH):
         data = _read()

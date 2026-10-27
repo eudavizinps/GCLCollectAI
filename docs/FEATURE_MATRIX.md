@@ -2,7 +2,7 @@
 
 | Funcionalidade | Status | Verificação |
 | --- | --- | --- |
-| Login, logout, sessão e senha com scrypt | Implementado | Teste HTTP e teste de interface de login |
+| Login, logout e sessão; scrypt local e hash portátil para credenciais públicas no Worker | Implementado para demo | Teste HTTP, teste de interface e login no Worker local |
 | Isolamento por tenant e autorização por perfil | Implementado no servidor | Testes HTTP de tenant e permissões |
 | Tema escuro/claro, sidebar e navegação | Implementado | Build; visual no navegador não verificado nesta sessão |
 | Credores, carteiras, clientes, contratos, títulos, ocorrências e equipes | CRUD básico | Teste HTTP do fluxo de cadastro e teste de interface do cliente |
@@ -17,4 +17,5 @@
 | Recuperação de senha por e-mail | Indisponível, sinalizado na interface | — |
 | Provedor LLM real, bots e integrações externas | Pendente | — |
 | PostgreSQL e migrações | Pendente | — |
+| Demonstração Cloudflare (FastAPI, React e Durable Object) | Publicada | Health, login e dashboard HTTPS; gravação no Worker local |
 | Playwright E2E e teste visual responsivo | Pendente | Automação de navegador bloqueada nesta sessão |

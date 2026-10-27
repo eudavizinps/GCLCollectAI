@@ -8,6 +8,9 @@ Base do CollectAI v0.1 criada a partir de workspace vazio. Seed de duas empresas
 
 - `npm run build`: passou em 27/10/2026. Vite avisou sobre bundle de 651 kB.
 - `python scripts/run_tests.py`: 10 testes passaram. Há um aviso de depreciação do TestClient/HTTPX da versão instalada.
+- Adaptação Cloudflare: 12 testes passaram, incluindo persistência e rejeição de alteração no adapter Durable Object.
+- Worker local em `127.0.0.1:8787`: health, login, dashboard e criação/leitura de cliente fictício passaram. Navegação SPA respondeu 200.
+- Demonstração publicada em `https://collectai-demo.davi-de-paula035.workers.dev` na conta Cloudflare `15705ccefdfbf96076615920c8f680ac`. Health, interface, navegação, login HTTPS e dashboard responderam corretamente. Pacote de 9,5 MiB.
 - `npm test` em `frontend`: 3 testes de interface passaram (login, cadastro de cliente e navegação com permissão).
 - `npm audit --json`: 0 vulnerabilidades após atualização de React Router e Vitest.
 - Front-end e API locais responderam em `http://127.0.0.1:5173` e `http://127.0.0.1:8000`; o proxy `/api/v1/health` respondeu `ok`.

@@ -6,10 +6,12 @@ from fastapi.responses import JSONResponse
 from app.core.config import DATA_PATH, FRONTEND_ORIGIN
 from app.modules import admin, auth, finance, insights, records
 
+CLOUDFLARE_RUNTIME = False
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    if not DATA_PATH.exists():
+    if not CLOUDFLARE_RUNTIME and not DATA_PATH.exists():
         raise RuntimeError("Dados de demonstração ausentes. Execute python scripts/seed_demo.py")
     yield
 
@@ -22,7 +24,8 @@ app.add_middleware(CORSMiddleware, allow_origins=[FRONTEND_ORIGIN, "http://127.0
 async def protect_origin(request: Request, call_next):
     if request.method in ("POST", "PATCH", "PUT", "DELETE"):
         origin = request.headers.get("origin")
-        if origin and origin not in (FRONTEND_ORIGIN, "http://127.0.0.1:5173"):
+        same_origin = str(request.base_url).rstrip("/")
+        if origin and origin not in (FRONTEND_ORIGIN, "http://127.0.0.1:5173", same_origin):
             return JSONResponse({"detail": "Origem não autorizada"}, status_code=403)
     return await call_next(request)
 
