@@ -13,6 +13,7 @@ backend/.uv-python/
 backend/python_modules/
 backend/pylock.toml
 .cloudflare-dev/
+.cloudflare-build/
 .wrangler/
 cloudflare/.venv/
 backend/.wrangler/
