@@ -46,15 +46,31 @@ Essas credenciais são públicas e destinam-se somente à demonstração com dad
 
 ## Demonstração no Cloudflare
 
-Endereço público: https://collectai-demo.davi-de-paula035.workers.dev. O fluxo de deploy por commit está documentado em [Deploy automático pelo GitHub](docs/CLOUDFLARE_GIT.md).
+Endereço público: https://collectai-demo.davi-de-paula035.workers.dev. O fluxo de deploy por commit está documentado em [Deploy automático pelo GitHub](docs/deployment/cloudflare-git.md).
 
 O Worker em `cloudflare/wrangler.jsonc` executa a API FastAPI e serve o build React no mesmo endereço. Um Durable Object guarda alterações feitas na demonstração entre reinicializações. Os dados iniciais são fictícios e gerados por `python scripts/export_cloudflare_seed.py`.
 
-No Windows, execute `powershell.exe -ExecutionPolicy Bypass -File scripts/cloudflare.ps1 -Action dev` para testar em `http://127.0.0.1:8787`. Após autorizar o Wrangler com `-Action login`, publique com `-Action deploy`. O script contorna um problema do pywrangler com espaços no caminho do usuário criando temporariamente a unidade `X:`. Veja [instruções de publicação](docs/CLOUDFLARE_DEMO.md).
+No Windows, execute `powershell.exe -ExecutionPolicy Bypass -File scripts/cloudflare.ps1 -Action dev` para testar em `http://127.0.0.1:8787`. Após autorizar o Wrangler com `-Action login`, publique com `-Action deploy`. O script contorna um problema do pywrangler com espaços no caminho do usuário criando temporariamente a unidade `X:`. Veja [instruções de publicação](docs/deployment/cloudflare-demo.md).
 
 ## Estrutura
 
-`frontend/` contém a aplicação Vite/React; `backend/app/` contém API, domínio e adapter JSON; `scripts/` contém inicialização e seed; `tests/` contém testes HTTP; `docs/` contém arquitetura, regras, mapa, matriz e status.
+```text
+backend/
+  app/core/          configuração, sessões e persistência
+  app/domain/        regras de negócio e cálculos financeiros
+  app/modules/       rotas HTTP por área
+  tests/             testes da API e do armazenamento Cloudflare
+frontend/
+  src/features/      telas organizadas por domínio
+  src/components/    componentes reutilizáveis e marca
+  src/app/           rotas, navegação e autenticação
+  src/tests/         testes da interface
+cloudflare/          configuração e entrada do Worker
+scripts/             comandos de desenvolvimento, seed e deploy
+docs/               arquitetura, publicação, planejamento e status
+```
+
+O [índice da documentação](docs/README.md) explica onde encontrar cada assunto. Os diretórios `.cloudflare-build/`, `.cloudflare-dev/` e `frontend/dist/` são gerados localmente e ignorados pelo Git.
 
 ## Comandos de validação
 
@@ -77,4 +93,4 @@ O cookie de sessão usa `HttpOnly` e `SameSite=Lax`; em HTTPS também usa `Secur
 
 ## Migração futura
 
-O contrato do adapter em `backend/app/core/storage.py` pode ser substituído por repositórios SQLAlchemy com PostgreSQL e Alembic. O domínio financeiro deve continuar responsável pelos cálculos e transições. Veja [desenho de dados](docs/database-design.md).
+O contrato do adapter em `backend/app/core/storage.py` pode ser substituído por repositórios SQLAlchemy com PostgreSQL e Alembic. O domínio financeiro deve continuar responsável pelos cálculos e transições. Veja [desenho de dados](docs/architecture/database-design.md).

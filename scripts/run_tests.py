@@ -6,4 +6,4 @@ sys.path.insert(0, str(root / "backend" / ".deps"))
 sys.path.insert(0, str(root / "backend"))
 import pytest
 
-raise SystemExit(pytest.main([str(root / "tests"), "-q"]))
+raise SystemExit(pytest.main([str(root / "backend" / "tests"), "-q"]))

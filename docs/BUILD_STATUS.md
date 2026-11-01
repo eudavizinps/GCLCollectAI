@@ -1,11 +1,13 @@
-# Estado do build — 27/10/2026
+# Estado do build — 01/11/2026
 
 ## Última tarefa concluída
 
-Base do CollectAI v0.1 criada a partir de workspace vazio. Seed de duas empresas com cinco credores, oito carteiras, 60 clientes, 100 títulos, ocorrências, negociações, acordos, pagamentos, equipes, notificações e auditoria. Front-end integrado à API. Saldos financeiros alocados a acordo, parcelas e títulos.
+Repositório organizado para trabalho em equipe: testes da API em `backend/tests/`, documentação separada em `docs/architecture/`, `docs/deployment/` e `docs/planning/`, com índice em `docs/README.md`. Os caminhos usados pelos comandos de build e deploy permaneceram iguais. Nenhuma regra de negócio foi alterada.
 
 ## Verificações executadas
 
+- Reorganização em 01/11/2026: `python scripts/run_tests.py` passou com 12 testes e um aviso de depreciação do TestClient/HTTPX.
+- Reorganização em 01/11/2026: `npm test` em `frontend` passou com 3 testes; `npm run build` passou.
 - `npm run build`: passou em 27/10/2026. Vite avisou sobre bundle de 651 kB.
 - `python scripts/run_tests.py`: 10 testes passaram. Há um aviso de depreciação do TestClient/HTTPX da versão instalada.
 - Adaptação Cloudflare: 12 testes passaram, incluindo persistência e rejeição de alteração no adapter Durable Object.

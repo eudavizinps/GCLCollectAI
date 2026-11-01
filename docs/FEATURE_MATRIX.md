@@ -1,4 +1,4 @@
-# Matriz de funcionalidades — 27/10/2026
+# Matriz de funcionalidades — 01/11/2026
 
 | Funcionalidade | Status | Verificação |
 | --- | --- | --- |
@@ -19,3 +19,5 @@
 | PostgreSQL e migrações | Pendente | — |
 | Demonstração Cloudflare (FastAPI, React e Durable Object) | Publicada | Health, login e dashboard HTTPS; gravação no Worker local |
 | Playwright E2E e teste visual responsivo | Pendente | Automação de navegador bloqueada nesta sessão |
+
+A reorganização de pastas de 01/11/2026 alterou apenas localização de testes e documentos, caminhos de importação dos testes e referências no README. Os estados das funcionalidades permanecem os mesmos.
