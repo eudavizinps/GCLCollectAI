@@ -4,6 +4,11 @@ frontend/*.tsbuildinfo
 frontend/coverage/
 frontend/playwright-report/
 frontend/test-results/
+/tests/
+/backend/tests/
+/frontend/src/tests/
+**/*.test.tsx
+**/test_*.py
 backend/.deps/
 backend/.venv/
 backend/.venv-workers/

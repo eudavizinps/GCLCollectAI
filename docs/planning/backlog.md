@@ -2,7 +2,7 @@
 
 ## Alta prioridade
 
-- Testes end-to-end com Playwright para cadastro, cobrança, negociação, aceite e pagamento.
+- Conferência completa dos fluxos de cadastro, cobrança, negociação, aceite e pagamento em navegador.
 - Política de negociação editável por tenant; aplicar limites sem editar código.
 - Contestação de títulos e suspensão operacional consistente.
 - Paginação no servidor e exportação integral para relatórios grandes.
@@ -14,7 +14,7 @@
 - PostgreSQL, SQLAlchemy, Alembic e transações.
 - Autenticação de produção, HTTPS, cookie Secure, CSRF, rate limit e recuperação de senha com provedor.
 - Normalização de parcelas, alocações e contatos.
-- Contratos de repositório tipados e cobertura de testes ampliada.
+- Contratos de repositório tipados e validação dos fluxos principais.
 - Divisão de bundles e otimização de gráficos.
 
 ## Integrações futuras

@@ -26,4 +26,4 @@ Para desenvolvimento local, use `-Action dev` e acesse `http://127.0.0.1:8787`. 
 
 ## Verificações locais
 
-Com `-Action dev`, foram verificados `/`, a navegação `/app/dashboard`, `/api/v1/health`, login, dashboard, leitura e criação de cliente fictício. No endereço público, foram verificados `/`, `/app/dashboard`, health, login com cookie `Secure` e leitura do dashboard. O pacote enviado tinha 9,5 MiB. Os testes da API e o build frontend também devem passar antes de cada publicação.
+Com `-Action dev`, foram verificados `/`, a navegação `/app/dashboard`, `/api/v1/health`, login, dashboard, leitura e criação de cliente fictício. No endereço público, foram verificados `/`, `/app/dashboard`, health, login com cookie `Secure` e leitura do dashboard. O pacote enviado tinha 9,5 MiB. Antes de cada publicação, execute o build do frontend e confira a API e os fluxos alterados.

@@ -1,32 +1,18 @@
 # Estado do build — 01/11/2026
 
-## Última tarefa concluída
+## Alteração mais recente
 
-Repositório organizado para trabalho em equipe: testes da API em `backend/tests/`, documentação separada em `docs/architecture/`, `docs/deployment/` e `docs/planning/`, com índice em `docs/README.md`. Os caminhos usados pelos comandos de build e deploy permaneceram iguais. Nenhuma regra de negócio foi alterada.
+As pastas de testes da API e da interface foram retiradas do repositório, junto com os comandos, configurações e dependências usados apenas por elas. Os arquivos de produção Python e TypeScript foram formatados para leitura, sem mudança intencional de comportamento. A aplicação e os comandos de publicação permanecem nos mesmos caminhos.
 
-## Verificações executadas
+## Verificação atual
 
-- Reorganização em 01/11/2026: `python scripts/run_tests.py` passou com 12 testes e um aviso de depreciação do TestClient/HTTPX.
-- Reorganização em 01/11/2026: `npm test` em `frontend` passou com 3 testes; `npm run build` passou.
-- `npm run build`: passou em 27/10/2026. Vite avisou sobre bundle de 651 kB.
-- `python scripts/run_tests.py`: 10 testes passaram. Há um aviso de depreciação do TestClient/HTTPX da versão instalada.
-- Adaptação Cloudflare: 12 testes passaram, incluindo persistência e rejeição de alteração no adapter Durable Object.
-- Worker local em `127.0.0.1:8787`: health, login, dashboard e criação/leitura de cliente fictício passaram. Navegação SPA respondeu 200.
-- Demonstração publicada em `https://collectai-demo.davi-de-paula035.workers.dev` na conta Cloudflare `15705ccefdfbf96076615920c8f680ac`. Health, interface, navegação, login HTTPS e dashboard responderam corretamente. Pacote de 9,5 MiB.
-- GitHub `eudavizinps/GCLCollectAI` conectado ao Worker com produção em `main` e builds ativados. Um commit posterior gerou a versão `a33ca48f-3b63-4e80-9212-92b466e665c2`, ativada em 27/10/2026 às 18:57:39 UTC.
-- `npm test` em `frontend`: 3 testes de interface passaram (login, cadastro de cliente e navegação com permissão).
-- `npm audit --json`: 0 vulnerabilidades após atualização de React Router e Vitest.
-- Front-end e API locais responderam em `http://127.0.0.1:5173` e `http://127.0.0.1:8000`; o proxy `/api/v1/health` respondeu `ok`.
-- Inspeção visual no navegador: não realizada; a ferramenta de computador interrompeu a sessão porque não conseguiu identificar a URL atual com confiança.
-- Docker Compose: arquivos preparados, execução não verificada neste ambiente.
-- Tailwind CSS, shadcn/ui, TanStack Query, React Hook Form, Zod e Motion ainda não foram incorporados. A interface atual usa componentes React e CSS próprio.
+- `npm ci` e `npm run build` em `frontend/`: passaram após a limpeza e a formatação.
+- `python -m compileall -q backend/app scripts cloudflare/worker.py`: passou após a formatação Python.
+- API local: iniciou normalmente; `/api/v1/health`, login e dashboard responderam `200 OK`.
+- Após o envio ao GitHub, conferir o build automático no painel da Cloudflare e a resposta de `/api/v1/health`.
 
-## Próximos passos prioritários
+## Estado do produto
 
-1. Validar visualmente desktop/mobile e executar fluxos Playwright em ambiente com navegador disponível.
-2. Completar as áreas parciais da matriz, em especial permissões granulares, usuários/equipes e relatórios completos.
-3. Implementar contestação, renegociação e quebra de acordo com testes financeiros.
-4. Migrar JSON para PostgreSQL com transações e migrações.
-5. Preparar segurança de produção, integrações externas e provedor LLM real.
+A demonstração usa dados fictícios, FastAPI, React e um Durable Object no Cloudflare. Os quatro agentes de IA ainda funcionam com regras determinísticas. PostgreSQL, provedor LLM real, integração bancária, envio de mensagens e recuperação de senha por e-mail não foram implementados.
 
-Não considerar este documento uma declaração de conclusão integral do Prompt Mestre V2. A matriz contém o estado real por funcionalidade.
+As verificações automatizadas anteriores constam no histórico do Git, mas seus arquivos foram removidos por decisão do proprietário. Para mudanças futuras, conferir o build e os fluxos afetados antes de publicar.

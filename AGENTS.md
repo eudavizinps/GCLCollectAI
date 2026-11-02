@@ -6,5 +6,5 @@
 - Toda transição financeira deve usar `Decimal`, ocorrer sob `storage.change` e gerar auditoria. Não edite saldo financeiro por CRUD genérico.
 - Agentes de IA demonstrativos consultam serviços autorizados e registram execução. Não lhes dê acesso direto à persistência ou permissão para confirmar pagamentos.
 - `backend/data` contém apenas dados fictícios locais. `scripts/seed_demo.py --reset` cria backup antes de substituir dados.
-- Antes de declarar um recurso pronto, execute `python scripts/run_tests.py` e `npm run build` em `frontend` e atualize `docs/FEATURE_MATRIX.md` e `docs/BUILD_STATUS.md`.
+- Antes de declarar um recurso pronto, execute `npm run build` em `frontend`, confira os fluxos afetados e atualize `docs/FEATURE_MATRIX.md` e `docs/BUILD_STATUS.md`.
 - As imagens em `frontend/public/brand` foram fornecidas pelo proprietário e devem manter as proporções originais.

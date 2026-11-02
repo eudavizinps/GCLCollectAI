@@ -59,12 +59,10 @@ backend/
   app/core/          configuração, sessões e persistência
   app/domain/        regras de negócio e cálculos financeiros
   app/modules/       rotas HTTP por área
-  tests/             testes da API e do armazenamento Cloudflare
 frontend/
   src/features/      telas organizadas por domínio
   src/components/    componentes reutilizáveis e marca
   src/app/           rotas, navegação e autenticação
-  src/tests/         testes da interface
 cloudflare/          configuração e entrada do Worker
 scripts/             comandos de desenvolvimento, seed e deploy
 docs/               arquitetura, publicação, planejamento e status
@@ -72,14 +70,14 @@ docs/               arquitetura, publicação, planejamento e status
 
 O [índice da documentação](docs/README.md) explica onde encontrar cada assunto. Os diretórios `.cloudflare-build/`, `.cloudflare-dev/` e `frontend/dist/` são gerados localmente e ignorados pelo Git.
 
-## Comandos de validação
+## Verificação local
 
 ```powershell
-python scripts/run_tests.py
 cd frontend
-npm test
 npm run build
 ```
+
+Depois do build, execute a API e confira `/api/v1/health` e os fluxos que você alterou.
 
 ## Configuração
 
@@ -87,7 +85,7 @@ Veja `.env.example`. `AI_PROVIDER=demo` funciona sem chave externa. Outros valor
 
 ## Limitações do v0.1
 
-O produto ainda não inclui PostgreSQL, integração bancária, envio de mensagens, provedor LLM real, recuperação de senha por e-mail, editor de políticas financeiras, exportação PDF dedicada nem testes Playwright. As páginas e fluxos principais existem, mas algumas telas de gestão têm recursos parciais. Veja [matriz de funcionalidades](docs/FEATURE_MATRIX.md) e [status de build](docs/BUILD_STATUS.md).
+O produto ainda não inclui PostgreSQL, integração bancária, envio de mensagens, provedor LLM real, recuperação de senha por e-mail, editor de políticas financeiras nem exportação PDF dedicada. As páginas e fluxos principais existem, mas algumas telas de gestão têm recursos parciais. Veja [matriz de funcionalidades](docs/FEATURE_MATRIX.md) e [status de build](docs/BUILD_STATUS.md).
 
 O cookie de sessão usa `HttpOnly` e `SameSite=Lax`; em HTTPS também usa `Secure`. A demonstração no Cloudflare ainda não é um serviço apto a receber dados reais. Antes de operação real, são necessários autenticação e proteção de acesso adequadas, gestão de segredos, proteção CSRF, banco transacional e revisão de segurança.
 

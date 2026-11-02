@@ -16,7 +16,5 @@
 | Dashboard e IA | `frontend/src/features/dashboard/`, `frontend/src/features/ai/` |
 | Gestão e sistema | `frontend/src/features/management/`, `frontend/src/features/settings/`, `frontend/src/features/profile/`, `frontend/src/features/notifications/` |
 | Cliente HTTP e CSV | `frontend/src/services/api.ts` |
-| Testes HTTP e armazenamento | `backend/tests/test_api.py`, `backend/tests/test_cloudflare_demo.py` |
-| Testes da interface | `frontend/src/tests/` |
 | Cloudflare Worker | `cloudflare/worker.py`, `cloudflare/wrangler.jsonc` |
 | Automação de build e seed | `scripts/` |
