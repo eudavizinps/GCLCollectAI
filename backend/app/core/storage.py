@@ -1,4 +1,5 @@
 """Atomic JSON adapter. Domain code receives dictionaries, never file paths."""
+
 from contextlib import contextmanager
 from contextvars import ContextVar
 from copy import deepcopy
@@ -12,7 +13,9 @@ from typing import Callable, TypeVar
 from app.core.config import DATA_PATH
 
 T = TypeVar("T")
-_durable_storage: ContextVar[object | None] = ContextVar("durable_storage", default=None)
+_durable_storage: ContextVar[object | None] = ContextVar(
+    "durable_storage", default=None
+)
 _DURABLE_KEY = "collectai-demo-v3"
 
 
@@ -82,7 +85,9 @@ def change(operation: Callable[[dict], T]) -> T:
     with _lock(DATA_PATH):
         data = _read()
         result = operation(data)
-        fd, name = tempfile.mkstemp(prefix="collectai-", suffix=".tmp", dir=DATA_PATH.parent)
+        fd, name = tempfile.mkstemp(
+            prefix="collectai-", suffix=".tmp", dir=DATA_PATH.parent
+        )
         try:
             with os.fdopen(fd, "w", encoding="utf-8") as file:
                 json.dump(data, file, ensure_ascii=False, indent=2, default=str)

@@ -1,4 +1,5 @@
 """Bundle fictional seed data for the Cloudflare demonstration Worker."""
+
 import base64
 import json
 from pathlib import Path
@@ -7,7 +8,6 @@ import zlib
 
 from seed_demo import build
 from app.core.security import demo_password_hash
-
 
 root = Path(__file__).resolve().parents[1]
 fictional = build()

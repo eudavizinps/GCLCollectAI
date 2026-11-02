@@ -1,9 +1,9 @@
 """Cloudflare entry point for the fictional CollectAI demonstration."""
+
 from workers import DurableObject, WorkerEntrypoint, asgi
 
 from app import main as api
 from app.core.storage import bind_durable_storage, unbind_durable_storage
-
 
 api.CLOUDFLARE_RUNTIME = True
 
