@@ -23,6 +23,10 @@ O login foi compactado para janelas de desktop com pouca altura. Os layouts comp
 
 `npm run build` em `frontend/` passou. A conferência local com dados fictícios percorreu login e páginas internas em larguras de 320, 390, 768, 1024 e 1280 px. As capturas do login e de páginas representativas foram inspecionadas em 390 px; em 1280×720 o login cabe integralmente na janela. Em telas baixas de celular, a página rola verticalmente para manter os controles acessíveis.
 
+### Correção da rolagem do login
+
+O contêiner do login usava `overflow-x: hidden`, que criava uma área de rolagem vertical interna. A decoração circular fora da tela aumentava essa área e deixava um grande espaço vazio. O contêiner agora usa `overflow: clip`, sem barra interna; a página só rola quando o conteúdo ultrapassa a altura disponível. A medição no navegador confirmou altura do documento igual à janela em 1280×720 e 1267×630, sem largura excedente. Em 390×844 e 320×568, o conteúdo permanece acessível pela rolagem normal da página.
+
 ## Estado do produto
 
 A demonstração usa dados fictícios, FastAPI, React e um Durable Object no Cloudflare. Os quatro agentes de IA ainda funcionam com regras determinísticas. PostgreSQL, provedor LLM real, integração bancária, envio de mensagens e recuperação de senha por e-mail não foram implementados.

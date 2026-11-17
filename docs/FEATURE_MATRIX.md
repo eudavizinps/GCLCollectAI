@@ -2,7 +2,7 @@
 
 | Funcionalidade | Estado | Onde conferir |
 | --- | --- | --- |
-| Layout responsivo do login e das páginas internas | Ajustado para celular, tablet e desktop; tabelas com rolagem no próprio painel | `frontend/src/styles/login.css` e `frontend/src/styles/responsive.css` |
+| Layout responsivo do login e das páginas internas | Ajustado para celular, tablet e desktop; login sem rolagem dupla e tabelas com rolagem no próprio painel | `frontend/src/styles/login.css` e `frontend/src/styles/responsive.css` |
 | Login, logout e sessão | Implementado para demo | `backend/app/modules/auth.py` e `backend/app/core/security.py` |
 | Visual do login inspirado no modelo roxo com efeito de vidro | Implementado; conferido localmente em desktop e celular | `frontend/src/features/auth/LoginPage.tsx` e `frontend/src/styles/login.css` |
 | Entrada com Microsoft | Apenas elemento visual desativado; integração pendente | `frontend/src/features/auth/LoginPage.tsx` |
