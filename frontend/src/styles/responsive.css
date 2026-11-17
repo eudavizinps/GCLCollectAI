@@ -60,8 +60,6 @@
   .topbar { padding: 0 8px; }
   .topbar-actions { gap: 0; }
   .report-filters { grid-template-columns: 1fr; }
-  .login-page .login-card { padding: 22px 17px; }
-  .login-benefits { grid-template-columns: 1fr; gap: 9px; }
-  .login-benefits > div { flex-direction: row; justify-content: flex-start; text-align: left; }
-  .login-benefits > div + div { border-left: 0; border-top: 1px solid #74628d; padding-top: 9px; }
+  .login-page .login-card { padding: 16px 15px 18px; }
+  .login-benefits { display: none; }
 }

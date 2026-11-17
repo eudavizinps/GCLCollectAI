@@ -61,11 +61,6 @@ export function LoginPage() {
           {error && <div className="error-banner" role="alert">{error}</div>}
           <button className="login-submit" type="submit" disabled={busy}>{busy ? 'Entrando...' : 'Entrar na plataforma'} <ArrowRight size={25} /></button>
         </form>
-        <div className="login-divider"><span>ou</span></div>
-        <button className="login-microsoft" type="button" disabled title="Integração Microsoft ainda não disponível">
-          <span className="microsoft-mark" aria-hidden="true"><i /><i /><i /><i /></span>Entrar com Microsoft
-        </button>
-        <p className="login-microsoft-note">Integração Microsoft em breve</p>
         <div className="login-benefits" aria-label="Recursos da plataforma">
           <div><Zap size={31} /><span><strong>Automação</strong><small>de cobranças</small></span></div>
           <div><ChartNoAxesColumnIncreasing size={31} /><span><strong>Controle</strong><small>de resultados</small></span></div>

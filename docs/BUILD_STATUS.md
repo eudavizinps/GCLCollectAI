@@ -1,5 +1,11 @@
 # Estado do build — 01/11/2026
 
+## Login compacto — 17/11/2026
+
+O cartão foi reduzido novamente em largura, tipografia e espaçamento. O botão da Microsoft, o separador e a nota de integração foram removidos. Em telas de até 400 px, o bloco de benefícios é ocultado para priorizar o formulário. O layout continua centralizado e mantém os campos acessíveis em telas pequenas.
+
+`npm run build` em `frontend/` passou; a busca no código confirmou que não restam componentes ou estilos da entrada Microsoft. A conferência visual automatizada nesta revisão foi interrompida porque a ferramenta não conseguiu confirmar a URL da aba do navegador.
+
 ## Login sem credenciais iniciais — 17/11/2026
 
 O formulário de login deixou de preencher automaticamente a conta demonstrativa. E-mail e senha começam vazios; os campos têm nomes estáveis e `autocomplete` apropriado para permitir o gerenciador de senhas do navegador. A forma e o momento da sugestão de credenciais dependem do navegador e das preferências do usuário.
@@ -16,7 +22,7 @@ Verificação: `npm run build` em `frontend/`, compilação Python e checagem de
 
 ## Atualização de 17/11/2026
 
-A tela de login recebeu um novo layout centralizado, fundo roxo, painel translúcido e adaptação para celular conforme o modelo enviado pelo proprietário. O formulário existente, a opção de manter sessão, a visualização da senha e a recuperação de senha continuam disponíveis. A entrada com Microsoft aparece desativada porque a integração ainda não existe.
+A tela de login recebeu um novo layout centralizado, fundo roxo, painel translúcido e adaptação para celular conforme o modelo enviado pelo proprietário. O formulário existente, a opção de manter sessão, a visualização da senha e a recuperação de senha continuam disponíveis. A entrada com Microsoft foi removida na revisão mais recente porque a integração não existe.
 
 `npm run build` em `frontend/` passou. A conferência visual local em desktop e celular foi concluída na revisão responsiva registrada abaixo.
 
