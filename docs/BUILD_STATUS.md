@@ -27,6 +27,10 @@ O login foi compactado para janelas de desktop com pouca altura. Os layouts comp
 
 O contêiner do login usava `overflow-x: hidden`, que criava uma área de rolagem vertical interna. A decoração circular fora da tela aumentava essa área e deixava um grande espaço vazio. O contêiner agora usa `overflow: clip`, sem barra interna; a página só rola quando o conteúdo ultrapassa a altura disponível. A medição no navegador confirmou altura do documento igual à janela em 1280×720 e 1267×630, sem largura excedente. Em 390×844 e 320×568, o conteúdo permanece acessível pela rolagem normal da página.
 
+### Ajuste das proporções do login
+
+O cartão, o logotipo, os textos, os campos e os botões foram reduzidos em conjunto para manter o formulário centralizado sem ocupar quase toda a tela. A versão compacta também atende janelas intermediárias com pouca altura. A conferência visual local foi feita em 1280×720, 700×630 e 390×844; nessas medidas, todo o login e o rodapé cabem na janela sem rolagem. Em 320×568, a página rola verticalmente para manter todos os controles acessíveis.
+
 ## Estado do produto
 
 A demonstração usa dados fictícios, FastAPI, React e um Durable Object no Cloudflare. Os quatro agentes de IA ainda funcionam com regras determinísticas. PostgreSQL, provedor LLM real, integração bancária, envio de mensagens e recuperação de senha por e-mail não foram implementados.
