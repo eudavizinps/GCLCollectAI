@@ -1,5 +1,9 @@
 # Matriz de funcionalidades — 01/11/2026
 
+## Login — 17/11/2026
+
+O login abre com e-mail e senha vazios. Os campos mantêm os identificadores padrão de preenchimento do navegador, para que o usuário possa selecionar credenciais salvas quando o navegador oferecer essa opção.
+
 ## Perfis ativos — 17/11/2026
 
 | Funcionalidade | Administrador | Supervisor | Operador |

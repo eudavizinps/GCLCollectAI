@@ -1,5 +1,11 @@
 # Estado do build — 01/11/2026
 
+## Login sem credenciais iniciais — 17/11/2026
+
+O formulário de login deixou de preencher automaticamente a conta demonstrativa. E-mail e senha começam vazios; os campos têm nomes estáveis e `autocomplete` apropriado para permitir o gerenciador de senhas do navegador. A forma e o momento da sugestão de credenciais dependem do navegador e das preferências do usuário.
+
+`npm run build` em `frontend/` passou após a alteração. A inspeção do formulário confirma que não há valores iniciais no código; o Chrome headless local não retornou o DOM para uma conferência visual nesta sessão.
+
 ## Perfis e acesso — 17/11/2026
 
 A matriz inicial tem Administrador, Supervisor e Operador. O perfil legado Superadministrador foi desativado no login, nas sessões, no cadastro e na demonstração gerada, sem apagar a implementação antiga. As páginas e a API aplicam as mesmas restrições de acesso. Operadores consultam clientes das carteiras da equipe, registram ocorrências, atualizam telefone/e-mail e atribuem fichas a outro operador autorizado da equipe. A fila de cobrança considera a atribuição. O dashboard gerencial e os relatórios são exclusivos de Administrador e Supervisor; usuários e configurações são exclusivos do Administrador. Os agentes de IA para Operador ficam limitados aos clientes autorizados, sem consulta gerencial.

@@ -8,8 +8,6 @@ import { homePath } from '../../app/permissions'
 export function LoginPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
-  const [email, setEmail] = useState('admin1@demo.collectai.local')
-  const [password, setPassword] = useState('Demo@12345')
   const [showPassword, setShowPassword] = useState(false)
   const [remember, setRemember] = useState(true)
   const [busy, setBusy] = useState(false)
@@ -20,7 +18,12 @@ export function LoginPage() {
     setBusy(true)
     setError('')
     try {
-      const role = await login(email, password, remember)
+      const form = new FormData(event.currentTarget)
+      const role = await login(
+        String(form.get('email') || ''),
+        String(form.get('password') || ''),
+        remember,
+      )
       navigate(homePath(role))
     } catch (err) {
       setError((err as Error).message)
@@ -40,12 +43,12 @@ export function LoginPage() {
         <form onSubmit={submit}>
           <label className="login-field" htmlFor="login-email">
             <span><Mail size={21} /> E-mail corporativo</span>
-            <input id="login-email" type="email" autoComplete="username" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Ex.: seuemail@empresa.com" />
+            <input id="login-email" name="email" type="email" autoComplete="username" required placeholder="Ex.: seuemail@empresa.com" />
           </label>
           <label className="login-field" htmlFor="login-password">
             <span><LockKeyhole size={21} /> Senha</span>
             <span className="login-password-wrap">
-              <input id="login-password" type={showPassword ? 'text' : 'password'} autoComplete="current-password" required value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Sua senha" />
+              <input id="login-password" name="password" type={showPassword ? 'text' : 'password'} autoComplete="current-password" required placeholder="Sua senha" />
               <button type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'} aria-pressed={showPassword}>
                 {showPassword ? <EyeOff size={23} /> : <Eye size={23} />}
               </button>
