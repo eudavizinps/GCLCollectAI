@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 from app.core.security import current_user, require
 from app.core.storage import change, read
+from app.domain.access import require_customer_access, require_record_access
 from app.domain.common import audit, get_scoped, new_id, notify, now, scoped
 from app.domain.financial import money, simulate
 
@@ -23,7 +24,9 @@ class SimulationInput(BaseModel):
 
 @router.post("/negotiations/simulate")
 def simulate_api(payload: SimulationInput, user: dict = Depends(current_user)):
-    return simulate(read(), user["tenant_id"], **payload.model_dump())
+    db = read()
+    require_customer_access(db, user, payload.customer_id)
+    return simulate(db, user["tenant_id"], **payload.model_dump())
 
 
 @router.post("/negotiations")
@@ -32,6 +35,7 @@ def create_negotiation(
     user: dict = Depends(require("admin", "supervisor", "operator")),
 ):
     def operation(db):
+        require_customer_access(db, user, payload.customer_id)
         result = simulate(db, user["tenant_id"], **payload.model_dump())
         busy = {
             title
@@ -106,7 +110,7 @@ def accept(
     item_id: str, user: dict = Depends(require("admin", "supervisor", "operator"))
 ):
     def operation(db):
-        item = get_scoped(db, "negotiations", item_id, user["tenant_id"])
+        item = require_record_access(db, "negotiations", item_id, user)
         if item["status"] not in ("draft", "approved"):
             raise HTTPException(409, "Negociação não pode ser aceita")
         item["status"] = "accepted"
@@ -180,9 +184,7 @@ def create_payment(
     user: dict = Depends(require("admin", "supervisor", "operator")),
 ):
     def operation(db):
-        agreement = get_scoped(
-            db, "agreements", payload.agreement_id, user["tenant_id"]
-        )
+        agreement = require_record_access(db, "agreements", payload.agreement_id, user)
         amount = money(payload.amount)
         if (
             agreement["status"] != "active"

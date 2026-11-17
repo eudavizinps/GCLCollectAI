@@ -6,6 +6,7 @@
 .notification-row span:nth-child(2), .history-row strong { min-width: 0; overflow-wrap: anywhere; }
 .table-scroll { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .table-scroll table { min-width: 650px; }
+.customer-contact-panel .primary-button, .customer-transfer-panel .primary-button { margin-top: 18px; }
 
 @media (max-width: 1100px) {
   .content { padding: 24px; }

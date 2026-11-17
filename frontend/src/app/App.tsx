@@ -4,6 +4,7 @@ import { useAuth } from './AuthContext'
 import { DashboardLayout } from '../layouts/DashboardLayout'
 import { resources } from '../features/records/config'
 import { LoadingState } from '../components/shared/States'
+import { canAccessPath, homePath } from './permissions'
 
 const LoginPage = lazy(() =>
   import('../features/auth/LoginPage').then((m) => ({ default: m.LoginPage })),
@@ -47,6 +48,10 @@ const NotificationsPage = lazy(() =>
 
 function AppContent() {
   const path = useLocation().pathname
+  const { user } = useAuth()
+  if (!canAccessPath(user?.role || '', path))
+    return <Navigate to={homePath(user?.role || '')} replace />
+  if (path.startsWith('/app/dashboard')) return <DashboardPage />
   if (path.startsWith('/app/cobrancas/fila')) return <QueuePage />
   if (path.startsWith('/app/negociacoes')) return <FinancePage section="negotiations" />
   if (path.startsWith('/app/acordos')) return <FinancePage section="agreements" />
@@ -62,7 +67,7 @@ function AppContent() {
     (item) => path === item.path || path.startsWith(item.path + '/'),
   )
   if (resource) return <RecordPage config={resource} />
-  return <DashboardPage />
+  return <Navigate to={homePath(user?.role || '')} replace />
 }
 
 export function App() {
@@ -79,7 +84,7 @@ export function App() {
       <Routes>
         <Route
           path="/login"
-          element={user ? <Navigate to="/app/dashboard" replace /> : <LoginPage />}
+          element={user ? <Navigate to={homePath(user.role)} replace /> : <LoginPage />}
         />
         <Route path="/recuperar-senha" element={<RecoverPage />} />
         <Route
@@ -94,7 +99,7 @@ export function App() {
             )
           }
         />
-        <Route path="*" element={<Navigate to={user ? '/app/dashboard' : '/login'} replace />} />
+        <Route path="*" element={<Navigate to={user ? homePath(user.role) : '/login'} replace />} />
       </Routes>
     </Suspense>
   )

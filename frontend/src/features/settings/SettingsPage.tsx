@@ -50,7 +50,7 @@ export function SettingsPage() {
       setBusy(false)
     }
   }
-  const canManage = ['superadmin', 'admin'].includes(user?.role || '')
+  const canManage = user?.role === 'admin'
   return (
     <>
       <PageHeader

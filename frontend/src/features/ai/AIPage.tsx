@@ -13,6 +13,7 @@ import {
 import { PageHeader } from '../../components/shared/PageHeader'
 import { ErrorState } from '../../components/shared/States'
 import { downloadCsv, get, post, type Paged, type RecordItem } from '../../services/api'
+import { useAuth } from '../../app/AuthContext'
 
 const agents = [
   {
@@ -46,9 +47,12 @@ const agents = [
 ]
 
 export function AIPage() {
+  const { user } = useAuth()
   const path = useLocation().pathname
   const [params] = useSearchParams()
-  const current = agents.find((agent) => path.endsWith('/' + agent.slug))
+  const availableAgents =
+    user?.role === 'operator' ? agents.filter((agent) => agent.slug !== 'gerencial') : agents
+  const current = availableAgents.find((agent) => path.endsWith('/' + agent.slug))
   const [customers, setCustomers] = useState<RecordItem[]>([])
   const [executions, setExecutions] = useState<RecordItem[]>([])
   const [status, setStatus] = useState('Modo demonstrativo')
@@ -112,7 +116,7 @@ export function AIPage() {
           </span>
         </div>
         <div className="ai-card-grid">
-          {agents.map((agent) => (
+          {availableAgents.map((agent) => (
             <Link className="ai-agent-card" to={`/app/ia/${agent.slug}`} key={agent.slug}>
               <span className="agent-icon">
                 <agent.icon size={26} />

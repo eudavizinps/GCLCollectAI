@@ -8,6 +8,13 @@ from pydantic import BaseModel, Field
 
 from app.core.security import current_user, require
 from app.core.storage import change, read
+from app.domain.access import (
+    ACTIVE_ROLES,
+    operator_team_id,
+    require_customer_access,
+    require_record_access,
+    visible_records,
+)
 from app.domain.common import audit, get_scoped, new_id, now, scoped
 
 router = APIRouter(tags=["records"])
@@ -123,7 +130,9 @@ def _validate(
                 for u in db["users"]
                 if u["id"] == data["supervisor_id"]
                 and u["tenant_id"] == tenant_id
-                and u["role"] in ("superadmin", "admin", "supervisor")
+                and u["role"] in ACTIVE_ROLES
+                and u["role"] != "operator"
+                and u.get("active", True)
             ),
             None,
         )
@@ -178,7 +187,7 @@ def list_records(
         "supervisor",
     ):
         raise HTTPException(403, "Permissão insuficiente")
-    items = scoped(read(), resource, user["tenant_id"])
+    items = visible_records(read(), resource, user)
     if q:
         items = [
             item
@@ -214,7 +223,7 @@ def detail(resource: str, item_id: str, user: dict = Depends(current_user)):
         "supervisor",
     ):
         raise HTTPException(403, "Permissão insuficiente")
-    return get_scoped(read(), resource, item_id, user["tenant_id"])
+    return require_record_access(read(), resource, item_id, user)
 
 
 @router.post("/{resource}")
@@ -223,11 +232,13 @@ def create(
     payload: RecordInput,
     user: dict = Depends(require("admin", "supervisor", "operator")),
 ):
-    if resource in ("creditors", "portfolios", "teams") and user["role"] == "operator":
+    if user["role"] == "operator" and resource != "occurrences":
         raise HTTPException(403, "Permissão insuficiente")
 
     def operation(db):
         fields = _validate(db, resource, payload.data.copy(), user["tenant_id"])
+        if resource == "occurrences":
+            require_customer_access(db, user, fields["customer_id"])
         item = {
             "id": new_id(),
             "tenant_id": user["tenant_id"],
@@ -270,13 +281,16 @@ def update(
     payload: RecordInput,
     user: dict = Depends(require("admin", "supervisor", "operator")),
 ):
-    if resource in ("creditors", "portfolios", "teams") and user["role"] == "operator":
-        raise HTTPException(403, "Permissão insuficiente")
+    if user["role"] == "operator":
+        if resource != "customers" or not set(payload.data).issubset({"phone", "email"}):
+            raise HTTPException(403, "Operador pode atualizar apenas telefone e e-mail")
     if resource in ("receivables", "occurrences"):
         raise HTTPException(403, "Histórico financeiro e ocorrências são imutáveis")
 
     def operation(db):
         item = get_scoped(db, resource, item_id, user["tenant_id"])
+        if user["role"] == "operator":
+            require_customer_access(db, user, item_id)
         fields = _validate(
             db, resource, payload.data.copy(), user["tenant_id"], partial=True
         )
@@ -284,6 +298,47 @@ def update(
         item["updated_at"] = now()
         audit(db, user, "update", resource, item_id)
         return item
+
+    return change(operation)
+
+
+class TransferInput(BaseModel):
+    operator_id: str
+
+
+@router.post("/customers/{item_id}/transfer")
+def transfer_customer(
+    item_id: str,
+    payload: TransferInput,
+    user: dict = Depends(require("admin", "supervisor", "operator")),
+):
+    def operation(db):
+        customer = require_customer_access(db, user, item_id)
+        if not customer.get("portfolio_id"):
+            raise HTTPException(422, "Cliente sem carteira vinculada")
+        portfolio = get_scoped(db, "portfolios", customer["portfolio_id"], user["tenant_id"])
+        target = next(
+            (
+                item
+                for item in db["users"]
+                if item["id"] == payload.operator_id
+                and item["tenant_id"] == user["tenant_id"]
+                and item["role"] == "operator"
+                and item.get("active", True)
+            ),
+            None,
+        )
+        if (
+            not portfolio.get("team_id")
+            or not target
+            or operator_team_id(db, target) != portfolio["team_id"]
+        ):
+            raise HTTPException(422, "Operador não autorizado para esta carteira")
+        previous = customer.get("operator_id")
+        customer["operator_id"] = target["id"]
+        customer["updated_at"] = now()
+        audit(db, user, "transfer", "customers", item_id, f"{previous or '-'} -> {target['id']}")
+        return customer
 
     return change(operation)
 

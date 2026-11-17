@@ -4,6 +4,7 @@ import { Bell, ChevronLeft, ChevronRight, LogOut, Menu, Moon, Search, Sun, X } f
 import { BrandLogo } from '../components/branding/BrandLogo'
 import { useAuth } from '../app/AuthContext'
 import { navigation } from '../app/navigation'
+import { canAccessPath, homePath } from '../app/permissions'
 import { get, post, type Paged, type RecordItem } from '../services/api'
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
@@ -52,11 +53,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     setShowNotifications(false)
     navigate(String(notification.path || '/app/notificacoes'))
   }
-  const allowed = (path: string) =>
-    !(
-      ['/app/usuarios', '/app/auditoria'].includes(path) &&
-      !['superadmin', 'admin', 'supervisor'].includes(user?.role || '')
-    )
+  const allowed = (path: string) => canAccessPath(user?.role || '', path)
   return (
     <div className={`shell ${collapsed ? 'sidebar-collapsed' : ''}`}>
       {mobile && (
@@ -68,7 +65,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
       )}
       <aside className={`sidebar ${mobile ? 'mobile-open' : ''}`}>
         <div className="sidebar-header">
-          <Link to="/app/dashboard">
+          <Link to={homePath(user?.role || '')}>
             <BrandLogo compact={collapsed} />
           </Link>
           <button

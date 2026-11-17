@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ArrowRight, ChartNoAxesColumnIncreasing, Eye, EyeOff, LockKeyhole, Mail, ShieldCheck, Zap } from 'lucide-react'
 import { BrandLogo } from '../../components/branding/BrandLogo'
 import { useAuth } from '../../app/AuthContext'
+import { homePath } from '../../app/permissions'
 
 export function LoginPage() {
   const { login } = useAuth()
@@ -19,8 +20,8 @@ export function LoginPage() {
     setBusy(true)
     setError('')
     try {
-      await login(email, password, remember)
-      navigate('/app/dashboard')
+      const role = await login(email, password, remember)
+      navigate(homePath(role))
     } catch (err) {
       setError((err as Error).message)
     } finally {

@@ -9,6 +9,7 @@ from app.core.security import (
     start_session,
 )
 from app.core.storage import read
+from app.domain.access import ACTIVE_ROLES
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -27,6 +28,7 @@ def login(payload: LoginInput, response: Response, request: Request):
             for u in read()["users"]
             if u["email"].casefold() == payload.email.casefold()
             and u.get("active", True)
+            and u["role"] in ACTIVE_ROLES
         ),
         None,
     )

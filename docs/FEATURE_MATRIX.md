@@ -1,5 +1,21 @@
 # Matriz de funcionalidades — 01/11/2026
 
+## Perfis ativos — 17/11/2026
+
+| Funcionalidade | Administrador | Supervisor | Operador |
+| --- | --- | --- | --- |
+| Dashboard gerencial | Sim | Sim | Não |
+| Consultar clientes e carteiras | Sim | Sim | Apenas carteiras da equipe |
+| Registrar ocorrências | Sim | Sim | Apenas clientes da equipe |
+| Atualizar telefone e e-mail | Sim | Sim | Apenas clientes da equipe |
+| Transferir ficha para outro operador | Sim | Sim | Apenas na equipe da carteira |
+| Consultar agentes de IA demonstrativos | Sim | Sim | Apenas clientes da equipe; sem agente gerencial |
+| Gerenciar usuários | Sim | Não | Não |
+| Relatórios financeiros e analytics | Sim | Sim | Não |
+| Configurar sistema | Sim | Não | Não |
+
+O perfil `superadmin` permanece no código legado, mas não pode iniciar sessão, ser criado nem ser atribuído. A demonstração nova cria somente os três perfis ativos por empresa. Contas legadas desse perfil continuam armazenadas, porém sem acesso. O Operador acessa as carteiras ligadas à sua equipe; a transferência altera o operador responsável pela ficha e sua fila de cobrança. A matriz é inicial e fixa: a configuração de permissões adicionais pelo Administrador fica para uma etapa futura.
+
 | Funcionalidade | Estado | Onde conferir |
 | --- | --- | --- |
 | Layout responsivo do login e das páginas internas | Ajustado para celular, tablet e desktop; login sem rolagem dupla e tabelas com rolagem no próprio painel | `frontend/src/styles/login.css` e `frontend/src/styles/responsive.css` |

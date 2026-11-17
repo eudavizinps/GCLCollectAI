@@ -11,6 +11,7 @@ import {
   post,
   type Paged,
   type RecordItem,
+  type User,
 } from '../../services/api'
 import { fieldLabel, type Field, type ResourceConfig } from './config'
 import { useAuth } from '../../app/AuthContext'
@@ -61,6 +62,11 @@ export function RecordPage({ config }: { config: ResourceConfig }) {
   const [items, setItems] = useState<RecordItem[]>([])
   const [total, setTotal] = useState(0)
   const [detail, setDetail] = useState<RecordItem | null>(null)
+  const [operators, setOperators] = useState<User[]>([])
+  const [selectedOperator, setSelectedOperator] = useState('')
+  const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
+  const [message, setMessage] = useState('')
   const [related, setRelated] = useState<Record<string, RecordItem[]>>({})
   const [form, setForm] = useState<Record<string, string>>({})
   const [busy, setBusy] = useState(false)
@@ -85,9 +91,22 @@ export function RecordPage({ config }: { config: ResourceConfig }) {
   useEffect(() => {
     if (itemId)
       get<RecordItem>(`/${config.resource}/${itemId}`)
-        .then(setDetail)
+        .then((item) => {
+          setDetail(item)
+          if (config.resource === 'customers') {
+            setPhone(String(item.phone || ''))
+            setEmail(String(item.email || ''))
+            setSelectedOperator(String(item.operator_id || ''))
+          }
+        })
         .catch((err) => setError(err.message))
     else setDetail(null)
+  }, [config.resource, itemId, refresh])
+  useEffect(() => {
+    if (config.resource !== 'customers' || !itemId) return
+    get<User[]>(`/operators?customer_id=${encodeURIComponent(itemId)}`)
+      .then(setOperators)
+      .catch((err) => setError(err.message))
   }, [config.resource, itemId, refresh])
   useEffect(() => {
     const refs = [
@@ -152,6 +171,34 @@ export function RecordPage({ config }: { config: ResourceConfig }) {
       setError((err as Error).message)
     }
   }
+  const saveContact = async (event: FormEvent) => {
+    event.preventDefault()
+    setBusy(true)
+    setError('')
+    try {
+      await patch(`/customers/${itemId}`, { data: { phone, email } })
+      setMessage('Contato atualizado.')
+      setRefresh((value) => value + 1)
+    } catch (err) {
+      setError((err as Error).message)
+    } finally {
+      setBusy(false)
+    }
+  }
+  const transferCustomer = async () => {
+    if (!selectedOperator) return
+    setBusy(true)
+    setError('')
+    try {
+      await post(`/customers/${itemId}/transfer`, { operator_id: selectedOperator })
+      setMessage('Ficha atribuída ao operador.')
+      setRefresh((value) => value + 1)
+    } catch (err) {
+      setError((err as Error).message)
+    } finally {
+      setBusy(false)
+    }
+  }
   const exportRows = async () => {
     try {
       const rows = await fetchAll<RecordItem>(`/${config.resource}?q=${encodeURIComponent(query)}`)
@@ -162,8 +209,8 @@ export function RecordPage({ config }: { config: ResourceConfig }) {
   }
   const canEdit =
     !config.readOnly &&
-    ['superadmin', 'admin', 'supervisor', 'operator'].includes(user?.role || '') &&
-    !(['creditors', 'portfolios', 'teams'].includes(config.resource) && user?.role === 'operator')
+    ['admin', 'supervisor'].includes(user?.role || '')
+  const canCreate = canEdit || (config.resource === 'occurrences' && user?.role === 'operator')
   const customerActions =
     config.resource === 'customers' && detail ? (
       <div className="inline-actions">
@@ -183,7 +230,9 @@ export function RecordPage({ config }: { config: ResourceConfig }) {
     ) : null
   const details = useMemo(
     () =>
-      detail ? Object.entries(detail).filter(([key]) => !['id', 'tenant_id'].includes(key)) : [],
+      detail
+        ? Object.entries(detail).filter(([key]) => !['id', 'tenant_id', 'operator_id'].includes(key))
+        : [],
     [detail],
   )
   if (mode === 'create' || mode === 'edit')
@@ -244,6 +293,7 @@ export function RecordPage({ config }: { config: ResourceConfig }) {
           }
         />
         {error && <ErrorState message={error} />}{' '}
+        {message && <div className="success-banner">{message}</div>}
         {!detail ? (
           <LoadingState />
         ) : (
@@ -257,6 +307,52 @@ export function RecordPage({ config }: { config: ResourceConfig }) {
               ))}
             </div>
             {customerActions}
+            {config.resource === 'customers' && (
+              <div className="dashboard-grid">
+                <form className="panel customer-contact-panel" onSubmit={saveContact}>
+                  <h2>Atualizar contato</h2>
+                  <div className="form-grid">
+                    <label>
+                      Telefone
+                      <input value={phone} onChange={(event) => setPhone(event.target.value)} />
+                    </label>
+                    <label>
+                      E-mail
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(event) => setEmail(event.target.value)}
+                      />
+                    </label>
+                  </div>
+                  <button className="primary-button" disabled={busy}>Salvar contato</button>
+                </form>
+                <div className="panel customer-transfer-panel">
+                  <h2>Transferir ficha</h2>
+                  <label>
+                    Operador da equipe responsável
+                    <select
+                      value={selectedOperator}
+                      onChange={(event) => setSelectedOperator(event.target.value)}
+                    >
+                      <option value="">Selecione...</option>
+                      {operators.map((operator) => (
+                        <option key={operator.id} value={operator.id}>
+                          {operator.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <button
+                    className="primary-button"
+                    disabled={busy || !selectedOperator || selectedOperator === detail.operator_id}
+                    onClick={() => void transferCustomer()}
+                  >
+                    Atribuir operador
+                  </button>
+                </div>
+              </div>
+            )}
             {canEdit &&
               ['customers', 'creditors', 'portfolios', 'contracts', 'teams'].includes(
                 config.resource,
@@ -282,7 +378,7 @@ export function RecordPage({ config }: { config: ResourceConfig }) {
             <button className="secondary-button" onClick={() => void exportRows()}>
               <Download size={16} /> Exportar CSV
             </button>
-            {canEdit && (
+            {canCreate && (
               <Link className="primary-button" to={`${config.path}/novo`}>
                 <Plus size={17} /> Novo {config.singular}
               </Link>

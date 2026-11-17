@@ -7,6 +7,7 @@ from uuid import uuid4
 from fastapi import Depends, HTTPException, Request, Response
 
 from app.core.storage import change, read
+from app.domain.access import ACTIVE_ROLES
 
 
 def password_hash(password: str, salt: str | None = None) -> str:
@@ -83,7 +84,10 @@ def current_user(request: Request) -> dict:
         (
             u
             for u in db["users"]
-            if session and u["id"] == session["user_id"] and u.get("active", True)
+            if session
+            and u["id"] == session["user_id"]
+            and u.get("active", True)
+            and u["role"] in ACTIVE_ROLES
         ),
         None,
     )

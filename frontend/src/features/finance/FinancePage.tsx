@@ -153,7 +153,7 @@ export function FinancePage({ section }: { section: 'negotiations' | 'agreements
       setBusy(false)
     }
   }
-  const supervisor = ['superadmin', 'admin', 'supervisor'].includes(user?.role || '')
+  const supervisor = ['admin', 'supervisor'].includes(user?.role || '')
   const exportData = async () => {
     try {
       downloadCsv(`${section}.csv`, await fetchAll<RecordItem>(`/${section}`))

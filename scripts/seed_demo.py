@@ -16,6 +16,8 @@ from app.core.security import password_hash
 from app.core.storage import change
 from app.domain.common import new_id, now
 
+ENABLE_LEGACY_SUPERADMIN = False
+
 
 def build() -> dict:
     rng = random.Random(42)
@@ -75,18 +77,19 @@ def build() -> dict:
             }
             users.append(user)
             db["users"].append(user)
-        superadmin = {
-            "id": new_id(),
-            "tenant_id": tenant_id,
-            "name": f"Superadministrador {name.split()[0]}",
-            "email": f"superadmin{tenant_index+1}@demo.collectai.local",
-            "role": "superadmin",
-            "team_id": None,
-            "password_hash": shared_hash,
-            "active": True,
-        }
-        users.append(superadmin)
-        db["users"].append(superadmin)
+        if ENABLE_LEGACY_SUPERADMIN:
+            superadmin = {
+                "id": new_id(),
+                "tenant_id": tenant_id,
+                "name": f"Superadministrador {name.split()[0]}",
+                "email": f"superadmin{tenant_index+1}@demo.collectai.local",
+                "role": "superadmin",
+                "team_id": None,
+                "password_hash": shared_hash,
+                "active": True,
+            }
+            users.append(superadmin)
+            db["users"].append(superadmin)
         teams = []
         for index in range(2):
             team = {
@@ -100,6 +103,7 @@ def build() -> dict:
             }
             teams.append(team)
         db["records"].setdefault("teams", []).extend(teams)
+        users[2]["team_id"] = teams[0]["id"]
         creditors = []
         count = 3 if tenant_index == 0 else 2
         for index in range(count):

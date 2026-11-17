@@ -4,8 +4,10 @@ import { ArrowRight, PhoneCall, Sparkles } from 'lucide-react'
 import { PageHeader } from '../../components/shared/PageHeader'
 import { EmptyState, ErrorState, LoadingState } from '../../components/shared/States'
 import { get, post, type Paged, type RecordItem } from '../../services/api'
+import { useAuth } from '../../app/AuthContext'
 
 export function QueuePage() {
+  const { user } = useAuth()
   const [customers, setCustomers] = useState<RecordItem[]>([])
   const [titles, setTitles] = useState<RecordItem[]>([])
   const [occurrences, setOccurrences] = useState<RecordItem[]>([])
@@ -35,6 +37,12 @@ export function QueuePage() {
   const queue = useMemo(
     () =>
       customers
+        .filter(
+          (customer) =>
+            user?.role !== 'operator' ||
+            !customer.operator_id ||
+            customer.operator_id === user.id,
+        )
         .map((customer) => ({
           ...customer,
           titles: titles.filter(
@@ -55,7 +63,7 @@ export function QueuePage() {
               ),
             ),
         ),
-    [customers, titles],
+    [customers, titles, user],
   )
   const active = queue[index]
   const history = occurrences.filter((item) => item.customer_id === active?.id)

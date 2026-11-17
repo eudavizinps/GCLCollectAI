@@ -6,8 +6,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 
 from app.core.config import AI_PROVIDER
-from app.core.security import current_user
+from app.core.security import current_user, require
 from app.core.storage import change, read
+from app.domain.access import require_customer_access
 from app.domain.common import audit, get_scoped, new_id, now, scoped
 from app.domain.financial import money, simulate
 
@@ -142,7 +143,7 @@ def dashboard(
     days: int | None = Query(default=None, ge=1, le=3650),
     creditor_id: str | None = None,
     portfolio_id: str | None = None,
-    user: dict = Depends(current_user),
+    user: dict = Depends(require("admin", "supervisor")),
 ):
     return overview(read(), user["tenant_id"], days, creditor_id, portfolio_id)
 
@@ -176,10 +177,12 @@ def run_agent(agent: str, payload: AIInput, user: dict = Depends(current_user)):
         raise HTTPException(404, "Agente não encontrado")
     if AI_PROVIDER != "demo":
         raise HTTPException(503, "Provedor externo ainda não configurado")
+    if user["role"] == "operator" and agent == "management-query":
+        raise HTTPException(403, "Agente gerencial indisponível para operadores")
     db = read()
     tenant_id = user["tenant_id"]
     customer = (
-        get_scoped(db, "customers", payload.customer_id, tenant_id)
+        require_customer_access(db, user, payload.customer_id)
         if payload.customer_id
         else None
     )

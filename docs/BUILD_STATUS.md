@@ -1,5 +1,13 @@
 # Estado do build — 01/11/2026
 
+## Perfis e acesso — 17/11/2026
+
+A matriz inicial tem Administrador, Supervisor e Operador. O perfil legado Superadministrador foi desativado no login, nas sessões, no cadastro e na demonstração gerada, sem apagar a implementação antiga. As páginas e a API aplicam as mesmas restrições de acesso. Operadores consultam clientes das carteiras da equipe, registram ocorrências, atualizam telefone/e-mail e atribuem fichas a outro operador autorizado da equipe. A fila de cobrança considera a atribuição. O dashboard gerencial e os relatórios são exclusivos de Administrador e Supervisor; usuários e configurações são exclusivos do Administrador. Os agentes de IA para Operador ficam limitados aos clientes autorizados, sem consulta gerencial.
+
+A política atual é fixa. Permissões adicionais configuráveis pelo Administrador ainda não foram implementadas.
+
+Verificação: `npm run build` em `frontend/`, compilação Python e checagem de whitespace passaram. Em uma base fictícia isolada, foram conferidos login dos três perfis, bloqueio de login e sessão do Superadministrador legado, acesso ao dashboard, usuários, configurações e agente gerencial, consulta limitada a 15 de 30 clientes, atualização de contato, registro de ocorrência e transferência aceita ou recusada conforme equipe e carteira.
+
 ## Atualização de 17/11/2026
 
 A tela de login recebeu um novo layout centralizado, fundo roxo, painel translúcido e adaptação para celular conforme o modelo enviado pelo proprietário. O formulário existente, a opção de manter sessão, a visualização da senha e a recuperação de senha continuam disponíveis. A entrada com Microsoft aparece desativada porque a integração ainda não existe.

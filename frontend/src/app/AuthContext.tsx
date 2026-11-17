@@ -4,7 +4,7 @@ import { get, post, type User } from '../services/api'
 type Auth = {
   user: User | null
   loading: boolean
-  login: (email: string, password: string, remember: boolean) => Promise<void>
+  login: (email: string, password: string, remember: boolean) => Promise<string>
   logout: () => Promise<void>
   refresh: () => Promise<void>
 }
@@ -26,7 +26,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     void refresh()
   }, [])
   const login = async (email: string, password: string, remember: boolean) => {
-    setUser(await post<User>('/auth/login', { email, password, remember }))
+    const loggedIn = await post<User>('/auth/login', { email, password, remember })
+    setUser(loggedIn)
+    return loggedIn.role
   }
   const logout = async () => {
     await post('/auth/logout')

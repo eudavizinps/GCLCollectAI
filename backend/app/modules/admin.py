@@ -9,6 +9,13 @@ from app.core.security import (
     require,
 )
 from app.core.storage import change, read
+from app.domain.access import (
+    ACTIVE_ROLES,
+    operator_team_id,
+    require_customer_access,
+    require_record_access,
+    visible_records,
+)
 from app.domain.common import audit, get_scoped, new_id, now, scoped
 
 router = APIRouter(tags=["administration"])
@@ -31,16 +38,40 @@ class UserPatchInput(BaseModel):
 @router.get("/users")
 def users(user: dict = Depends(require("admin", "supervisor"))):
     return [
-        public_user(u) for u in read()["users"] if u["tenant_id"] == user["tenant_id"]
+        public_user(u)
+        for u in read()["users"]
+        if u["tenant_id"] == user["tenant_id"] and u["role"] in ACTIVE_ROLES
+    ]
+
+
+@router.get("/operators")
+def available_operators(customer_id: str, user: dict = Depends(current_user)):
+    db = read()
+    customer = require_customer_access(db, user, customer_id)
+    if not customer.get("portfolio_id"):
+        return []
+    portfolio = get_scoped(db, "portfolios", customer["portfolio_id"], user["tenant_id"])
+    team_id = portfolio.get("team_id")
+    if not team_id:
+        return []
+    return [
+        public_user(item)
+        for item in db["users"]
+        if item["tenant_id"] == user["tenant_id"]
+        and item["role"] == "operator"
+        and item.get("active", True)
+        and operator_team_id(db, item) == team_id
     ]
 
 
 @router.post("/users")
 def create_user(payload: UserInput, user: dict = Depends(require("admin"))):
-    if payload.role not in ("superadmin", "admin", "supervisor", "operator", "analyst"):
+    if payload.role not in ACTIVE_ROLES:
         raise HTTPException(422, "Perfil inválido")
     if payload.role == "superadmin" and user["role"] != "superadmin":
         raise HTTPException(403, "Somente superadministradores podem criar este perfil")
+    if payload.role == "operator" and not payload.team_id:
+        raise HTTPException(422, "Selecione uma equipe para o operador")
 
     def operation(db):
         if any(u["email"].casefold() == payload.email.casefold() for u in db["users"]):
@@ -80,16 +111,18 @@ def toggle_user(item_id: str, user: dict = Depends(require("admin"))):
         )
         if not item:
             raise HTTPException(404, "Usuário não encontrado")
+        if item["role"] not in ACTIVE_ROLES:
+            raise HTTPException(403, "Perfil desativado")
         if item["role"] == "superadmin" and user["role"] != "superadmin":
             raise HTTPException(
                 403, "Somente superadministradores podem alterar este perfil"
             )
         if (
-            item["role"] in ("superadmin", "admin")
+            item["role"] == "admin"
             and item.get("active", True)
             and sum(
                 u["tenant_id"] == user["tenant_id"]
-                and u["role"] in ("superadmin", "admin")
+                and u["role"] == "admin"
                 and u.get("active", True)
                 for u in db["users"]
             )
@@ -107,13 +140,7 @@ def toggle_user(item_id: str, user: dict = Depends(require("admin"))):
 def edit_user(
     item_id: str, payload: UserPatchInput, user: dict = Depends(require("admin"))
 ):
-    if payload.role and payload.role not in (
-        "superadmin",
-        "admin",
-        "supervisor",
-        "operator",
-        "analyst",
-    ):
+    if payload.role and payload.role not in ACTIVE_ROLES:
         raise HTTPException(422, "Perfil inválido")
     if payload.role == "superadmin" and user["role"] != "superadmin":
         raise HTTPException(
@@ -131,6 +158,8 @@ def edit_user(
         )
         if not item:
             raise HTTPException(404, "Usuário não encontrado")
+        if item["role"] not in ACTIVE_ROLES:
+            raise HTTPException(403, "Perfil desativado")
         if item["role"] == "superadmin" and user["role"] != "superadmin":
             raise HTTPException(
                 403, "Somente superadministradores podem alterar este perfil"
@@ -140,12 +169,12 @@ def edit_user(
                 409, "Não é possível remover o próprio perfil administrativo"
             )
         if (
-            item["role"] in ("superadmin", "admin")
+            item["role"] == "admin"
             and payload.role
-            and payload.role not in ("superadmin", "admin")
+            and payload.role != "admin"
             and sum(
                 u["tenant_id"] == user["tenant_id"]
-                and u["role"] in ("superadmin", "admin")
+                and u["role"] == "admin"
                 and u.get("active", True)
                 for u in db["users"]
             )
@@ -154,6 +183,10 @@ def edit_user(
             raise HTTPException(409, "A empresa precisa manter um administrador ativo")
         if payload.team_id:
             get_scoped(db, "teams", payload.team_id, user["tenant_id"])
+        if (payload.role or item["role"]) == "operator" and not (
+            payload.team_id if payload.team_id is not None else item.get("team_id")
+        ):
+            raise HTTPException(422, "Selecione uma equipe para o operador")
         item.update(payload.model_dump(exclude_unset=True))
         audit(db, user, "update", "users", item_id)
         return public_user(item)
@@ -162,7 +195,7 @@ def edit_user(
 
 
 @router.get("/settings")
-def settings(user: dict = Depends(current_user)):
+def settings(user: dict = Depends(require("admin"))):
     return next(
         (s for s in scoped(read(), "settings", user["tenant_id"])),
         {
@@ -236,7 +269,7 @@ def update_password(payload: PasswordInput, user: dict = Depends(current_user)):
 @router.post("/notifications/{item_id}/read")
 def read_notification(item_id: str, user: dict = Depends(current_user)):
     def operation(db):
-        item = get_scoped(db, "notifications", item_id, user["tenant_id"])
+        item = require_record_access(db, "notifications", item_id, user)
         item["read"] = True
         return item
 
@@ -246,7 +279,7 @@ def read_notification(item_id: str, user: dict = Depends(current_user)):
 @router.post("/notifications/read-all")
 def read_all(user: dict = Depends(current_user)):
     def operation(db):
-        for item in scoped(db, "notifications", user["tenant_id"]):
+        for item in visible_records(db, "notifications", user):
             item["read"] = True
         return {"ok": True}
 

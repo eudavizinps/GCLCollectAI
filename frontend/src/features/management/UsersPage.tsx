@@ -79,7 +79,7 @@ export function UsersPage() {
             <button className="secondary-button" onClick={() => setRefresh((v) => v + 1)}>
               <RefreshCw size={16} /> Atualizar
             </button>
-            {['superadmin', 'admin'].includes(user?.role || '') && (
+            {user?.role === 'admin' && (
               <button className="primary-button" onClick={newUser}>
                 <Plus size={16} /> Novo usuário
               </button>
@@ -114,18 +114,18 @@ export function UsersPage() {
             <label>
               Perfil
               <select value={role} onChange={(e) => setRole(e.target.value)}>
-                {user?.role === 'superadmin' && (
-                  <option value="superadmin">Superadministrador</option>
-                )}
                 <option value="admin">Administrador</option>
                 <option value="supervisor">Supervisor</option>
                 <option value="operator">Operador</option>
-                <option value="analyst">Analista</option>
               </select>
             </label>
             <label>
               Equipe
-              <select value={teamId} onChange={(e) => setTeamId(e.target.value)}>
+              <select
+                required={role === 'operator'}
+                value={teamId}
+                onChange={(e) => setTeamId(e.target.value)}
+              >
                 <option value="">Sem equipe</option>
                 {teams.map((team) => (
                   <option key={team.id} value={team.id}>
@@ -181,22 +181,21 @@ export function UsersPage() {
                       <td>{String(teams.find((team) => team.id === item.team_id)?.name || '—')}</td>
                       <td>{item.active ? 'Ativo' : 'Inativo'}</td>
                       <td>
-                        {['superadmin', 'admin'].includes(user?.role || '') &&
-                          (item.role !== 'superadmin' || user?.role === 'superadmin') && (
-                            <div className="inline-actions">
-                              <button className="text-button" onClick={() => editUser(item)}>
-                                Editar
+                        {user?.role === 'admin' && (
+                          <div className="inline-actions">
+                            <button className="text-button" onClick={() => editUser(item)}>
+                              Editar
+                            </button>
+                            {item.id !== user?.id && (
+                              <button
+                                className="text-button"
+                                onClick={() => void toggle(item.id)}
+                              >
+                                {item.active ? 'Inativar' : 'Ativar'}
                               </button>
-                              {item.id !== user?.id && (
-                                <button
-                                  className="text-button"
-                                  onClick={() => void toggle(item.id)}
-                                >
-                                  {item.active ? 'Inativar' : 'Ativar'}
-                                </button>
-                              )}
-                            </div>
-                          )}
+                            )}
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))}
