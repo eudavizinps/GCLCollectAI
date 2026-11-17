@@ -35,7 +35,14 @@ def _durable_read(storage: object) -> dict:
 
         raw = INITIAL_JSON
         storage.kv.put(_DURABLE_KEY, raw)
-    return json.loads(str(raw))
+    data = json.loads(str(raw))
+    if data.get("demo_accounts_version") != 1:
+        from app.core.demo_credentials import update_demo_accounts
+        from app.core.security import demo_password_hash
+
+        if update_demo_accounts(data, demo_password_hash):
+            storage.kv.put(_DURABLE_KEY, json.dumps(data, ensure_ascii=False))
+    return data
 
 
 @contextmanager

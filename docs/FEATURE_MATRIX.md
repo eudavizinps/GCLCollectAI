@@ -4,6 +4,8 @@
 
 O login abre com e-mail e senha vazios. Os campos mantêm os identificadores padrão de preenchimento do navegador, para que o usuário possa selecionar credenciais salvas quando o navegador oferecer essa opção.
 
+As três contas demonstrativas da empresa Aurora usam os e-mails `adminteste@collectai.local`, `supteste@collectai.local` e `opteste@collectai.local`; as senhas correspondentes estão registradas no guia de publicação.
+
 O cartão do login foi reduzido novamente para desktop e celular. A opção de entrada com Microsoft e o separador foram removidos da interface.
 
 ## Perfis ativos — 17/11/2026

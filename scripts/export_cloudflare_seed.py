@@ -7,13 +7,13 @@ import textwrap
 import zlib
 
 from seed_demo import build
+from app.core.demo_credentials import password_for_demo_user
 from app.core.security import demo_password_hash
 
 root = Path(__file__).resolve().parents[1]
 fictional = build()
-public_demo_hash = demo_password_hash("Demo@12345")
 for user in fictional["users"]:
-    user["password_hash"] = public_demo_hash
+    user["password_hash"] = demo_password_hash(password_for_demo_user(user))
 data = json.dumps(fictional, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
 encoded = base64.b85encode(zlib.compress(data, level=9)).decode("ascii")
 target = root / "backend" / "app" / "core" / "demo_seed.py"

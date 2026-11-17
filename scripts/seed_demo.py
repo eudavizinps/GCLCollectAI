@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend" / ".deps"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
 
 from app.core.config import DATA_PATH
+from app.core.demo_credentials import DEMO_ACCOUNTS, DEMO_ACCOUNTS_VERSION
 from app.core.security import password_hash
 from app.core.storage import change
 from app.domain.common import new_id, now
@@ -21,7 +22,13 @@ ENABLE_LEGACY_SUPERADMIN = False
 
 def build() -> dict:
     rng = random.Random(42)
-    db = {"tenants": [], "users": [], "sessions": [], "records": {}}
+    db = {
+        "tenants": [],
+        "users": [],
+        "sessions": [],
+        "records": {},
+        "demo_accounts_version": DEMO_ACCOUNTS_VERSION,
+    }
     tenant_names = ["Aurora Recuperação", "Horizonte Serviços"]
     first_names = [
         "Ana",
@@ -65,14 +72,19 @@ def build() -> dict:
             ("supervisor", "Supervisor"),
             ("operator", "Operador"),
         ):
+            demo_account = DEMO_ACCOUNTS.get(role) if tenant_index == 0 else None
             user = {
                 "id": new_id(),
                 "tenant_id": tenant_id,
                 "name": f"{label} {name.split()[0]}",
-                "email": f"{role}{tenant_index+1}@demo.collectai.local",
+                "email": (
+                    demo_account[1]
+                    if demo_account
+                    else f"{role}{tenant_index+1}@demo.collectai.local"
+                ),
                 "role": role,
                 "team_id": None,
-                "password_hash": shared_hash,
+                "password_hash": password_hash(demo_account[2]) if demo_account else shared_hash,
                 "active": True,
             }
             users.append(user)

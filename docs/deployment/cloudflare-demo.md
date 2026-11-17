@@ -19,7 +19,8 @@ Para desenvolvimento local, use `-Action dev` e acesse `http://127.0.0.1:8787`. 
 
 - Os dados iniciais são gerados em `backend/app/core/demo_seed.py` a partir de `scripts/seed_demo.py` e contêm somente pessoas e operações fictícias.
 - O Durable Object guarda as alterações da demonstração. Publicar uma nova versão não deve apagar esse estado; mudanças no seed só serão usadas ao iniciar uma instância vazia ou ao mudar deliberadamente a chave de armazenamento.
-- As credenciais `@demo.collectai.local` e a senha `Demo@12345` são públicas. Não insira dados reais nem senhas pessoais.
+- Na empresa Aurora, os acessos demonstrativos são `adminteste@collectai.local` / `admin1234`, `supteste@collectai.local` / `sup1234` e `opteste@collectai.local` / `op12345`. A empresa Horizonte mantém os acessos `admin2`, `supervisor2` e `operator2` em `@demo.collectai.local` com a senha `Demo@12345`. São credenciais públicas para dados fictícios; não insira dados reais nem senhas pessoais.
+- Uma migração única atualiza somente as três contas da Aurora já existentes no Durable Object quando a nova versão for publicada. Ela preserva os demais dados demonstrativos.
 - O hash portátil usado pelo Python Worker protege apenas essas credenciais públicas de demonstração. O ambiente local continua usando scrypt. Esta configuração não serve para operação real com clientes.
 - O serviço ainda não tem integração bancária, envio de mensagens, provedor LLM real, política de acesso no Cloudflare Access ou recuperação de senha por e-mail.
 - Para um endereço próprio, configure a rota ou domínio personalizado no painel Cloudflare depois de validar o endereço `workers.dev`.

@@ -1,5 +1,11 @@
 # Estado do build — 01/11/2026
 
+## Acessos demonstrativos — 17/11/2026
+
+Os acessos de Administrador, Supervisor e Operador da empresa Aurora foram alterados para as três credenciais de teste fornecidas pelo proprietário. O seed novo e o armazenamento local usam os novos dados. Uma migração única no adapter de armazenamento atualiza as contas já persistidas na Cloudflare sem apagar os dados fictícios; sessões anteriores dessas contas são encerradas. A empresa Horizonte mantém os acessos demonstrativos anteriores.
+
+Verificação local: os três logins novos responderam `200`, enquanto o e-mail antigo do Administrador respondeu `401`. O seed local, o pacote da Cloudflare e a migração idempotente foram conferidos. `npm run build` em `frontend/` e a compilação Python passaram.
+
 ## Login compacto — 17/11/2026
 
 O cartão foi reduzido novamente em largura, tipografia e espaçamento. O botão da Microsoft, o separador e a nota de integração foram removidos. Em telas de até 400 px, o bloco de benefícios é ocultado para priorizar o formulário. O layout continua centralizado e mantém os campos acessíveis em telas pequenas.
