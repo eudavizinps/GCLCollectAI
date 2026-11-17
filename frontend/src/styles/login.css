@@ -8,7 +8,7 @@
   gap: 30px;
   min-height: 100vh;
   padding: 52px 24px 28px;
-  overflow: hidden;
+  overflow-x: hidden;
   color: #f8f5ff;
   background: radial-gradient(ellipse 48% 70% at 0% 100%, #4b0d89, transparent 68%), radial-gradient(ellipse 52% 70% at 100% 0%, #331065, transparent 70%), linear-gradient(117deg, #190b37, #100b29 48%, #210b3f);
 }
@@ -76,6 +76,31 @@
 .login-benefits strong { color: #fff; font-size: 14px; }
 .login-benefits small { color: #c4b8d6; font-size: 12px; }
 .login-page .login-page-footer { color: #c3b9d7; font-size: 14px; text-align: center; }
+@media (min-width: 701px) and (max-height: 800px) {
+  .login-page { gap: 13px; padding: 16px 24px; }
+  .login-page .login-card { width: min(660px, 100%); padding: 18px 48px 20px; border-radius: 26px; }
+  .login-card-header .brand-logo.large img { width: 52px; height: 52px; border-radius: 13px; }
+  .login-card-header .brand-logo.large strong { font-size: 34px; }
+  .login-card-header .brand-logo.large small { font-size: 11px; }
+  .login-card-header h1 { margin: 10px 0 4px; font-size: 31px; }
+  .login-card-header p { margin-bottom: 15px; font-size: 13px; }
+  .login-page .login-field { margin-bottom: 10px; font-size: 13px; }
+  .login-field > span:first-child { margin-bottom: 4px; }
+  .login-field > span:first-child svg { width: 16px; height: 16px; }
+  .login-field input { height: 42px; padding-left: 16px; font-size: 13px; }
+  .login-page .login-options { margin: 2px 0 12px; font-size: 12px; }
+  .login-page .login-remember { font-size: 12px; }
+  .login-page .login-remember input { width: 17px; height: 17px; }
+  .login-page .login-submit { height: 47px; font-size: 16px; }
+  .login-divider { margin: 10px 20px 8px; }
+  .login-microsoft { height: 43px; font-size: 14px; }
+  .login-microsoft-note { margin-top: 3px; font-size: 10px; }
+  .login-benefits { margin-top: 12px; padding: 10px 12px; }
+  .login-benefits svg { width: 23px; height: 23px; }
+  .login-benefits strong { font-size: 12px; }
+  .login-benefits small { font-size: 10px; }
+  .login-page .login-page-footer { font-size: 11px; }
+}
 @media (max-width: 700px) {
   .login-page { min-height: 100svh; padding: 24px 14px; }
   .login-page::before { top: -550px; left: -420px; }

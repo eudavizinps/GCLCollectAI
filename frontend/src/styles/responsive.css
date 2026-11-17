@@ -1,0 +1,66 @@
+.content > *, .panel, .table-panel, .ai-workspace > *, .dashboard-grid > *, .finance-create > * { min-width: 0; }
+.content img, .content svg, .content canvas { max-width: 100%; }
+.content p, .content h1, .content h2, .content h3 { overflow-wrap: anywhere; }
+.page-actions, .inline-actions, .form-actions { flex-wrap: wrap; }
+.panel-heading { flex-wrap: wrap; }
+.notification-row span:nth-child(2), .history-row strong { min-width: 0; overflow-wrap: anywhere; }
+.table-scroll { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.table-scroll table { min-width: 650px; }
+
+@media (max-width: 1100px) {
+  .content { padding: 24px; }
+  .dashboard-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dashboard-filters .text-button { justify-self: start; }
+  .settings-layout { grid-template-columns: 190px minmax(0, 1fr); }
+}
+
+@media (max-width: 980px) {
+  .sidebar { height: 100dvh; }
+  .main-column, .sidebar-collapsed .main-column { min-width: 0; }
+  .queue-layout { grid-template-columns: minmax(190px, 240px) minmax(0, 1fr); }
+  .settings-layout { grid-template-columns: 1fr; }
+  .settings-tabs { flex-direction: row; overflow-x: auto; }
+  .settings-tabs button { flex: none; }
+}
+
+@media (max-width: 650px) {
+  .simple-auth { padding: 24px 16px; }
+  .simple-auth .panel { width: min(460px, 100%); }
+  .topbar { min-width: 0; }
+  .breadcrumb { min-width: 0; flex: 1; }
+  .breadcrumb > span, .breadcrumb > svg { display: none; }
+  .breadcrumb strong { overflow: hidden; text-overflow: ellipsis; }
+  .topbar-actions { flex: none; }
+  .notification-popover { position: fixed; top: 62px; right: 10px; width: min(300px, calc(100vw - 20px)); }
+  .content { min-width: 0; padding: 18px 12px; }
+  .page-header { gap: 15px; }
+  .page-header h1 { font-size: clamp(25px, 8vw, 34px); }
+  .page-actions { width: 100%; }
+  .page-actions > * { max-width: 100%; }
+  .stats-grid, .ai-card-grid, .form-grid, .detail-grid, .queue-layout, .dashboard-filters, .settings-layout, .finance-create, .ai-workspace, .dashboard-grid { grid-template-columns: minmax(0, 1fr); }
+  .report-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .queue-list { max-height: 260px; }
+  .summary-metrics { flex-wrap: wrap; }
+  .table-toolbar, .pagination { flex-wrap: wrap; gap: 10px; }
+  .table-toolbar .search-field { width: 100%; }
+  .ai-hero { padding: 32px 24px; }
+  .ai-hero h1 { font-size: clamp(36px, 10vw, 52px); }
+  .ai-agent-card { min-height: 0; }
+  .ai-agent-card p { min-height: 0; }
+  .ai-workspace { gap: 12px; }
+  .form-actions { justify-content: stretch; }
+  .form-actions > * { flex: 1 1 140px; }
+  .primary-button, .secondary-button, .danger-button { white-space: normal; text-align: center; }
+  .app-footer { font-size: 10px; line-height: 1.5; }
+}
+
+@media (max-width: 400px) {
+  .content { padding: 16px 10px; }
+  .topbar { padding: 0 8px; }
+  .topbar-actions { gap: 0; }
+  .report-filters { grid-template-columns: 1fr; }
+  .login-page .login-card { padding: 22px 17px; }
+  .login-benefits { grid-template-columns: 1fr; gap: 9px; }
+  .login-benefits > div { flex-direction: row; justify-content: flex-start; text-align: left; }
+  .login-benefits > div + div { border-left: 0; border-top: 1px solid #74628d; padding-top: 9px; }
+}

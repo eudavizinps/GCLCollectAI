@@ -4,7 +4,7 @@
 
 A tela de login recebeu um novo layout centralizado, fundo roxo, painel translúcido e adaptação para celular conforme o modelo enviado pelo proprietário. O formulário existente, a opção de manter sessão, a visualização da senha e a recuperação de senha continuam disponíveis. A entrada com Microsoft aparece desativada porque a integração ainda não existe.
 
-`npm run build` em `frontend/` passou. A ferramenta de navegador interrompeu a conferência visual antes da captura da página local; por isso, a correspondência visual em desktop e celular ainda precisa ser verificada no navegador.
+`npm run build` em `frontend/` passou. A conferência visual local em desktop e celular foi concluída na revisão responsiva registrada abaixo.
 
 ## Alteração mais recente
 
@@ -16,6 +16,12 @@ As pastas de testes da API e da interface foram retiradas do repositório, junto
 - `python -m compileall -q backend/app scripts cloudflare/worker.py`: passou após a formatação Python.
 - API local: iniciou normalmente; `/api/v1/health`, login e dashboard responderam `200 OK`.
 - Após o envio ao GitHub, conferir o build automático no painel da Cloudflare e a resposta de `/api/v1/health`.
+
+## Revisão responsiva de 17/11/2026
+
+O login foi compactado para janelas de desktop com pouca altura. Os layouts compartilhados foram ajustados para celular e tablet: navegação, filtros, cartões, formulários, gráficos, tabelas e painéis de configurações. As tabelas largas mantêm rolagem horizontal dentro do painel.
+
+`npm run build` em `frontend/` passou. A conferência local com dados fictícios percorreu login e páginas internas em larguras de 320, 390, 768, 1024 e 1280 px. As capturas do login e de páginas representativas foram inspecionadas em 390 px; em 1280×720 o login cabe integralmente na janela. Em telas baixas de celular, a página rola verticalmente para manter os controles acessíveis.
 
 ## Estado do produto
 
