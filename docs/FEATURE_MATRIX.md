@@ -3,6 +3,8 @@
 | Funcionalidade | Estado | Onde conferir |
 | --- | --- | --- |
 | Login, logout e sessão | Implementado para demo | `backend/app/modules/auth.py` e `backend/app/core/security.py` |
+| Visual do login inspirado no modelo roxo com efeito de vidro | Implementado; conferência visual pendente | `frontend/src/features/auth/LoginPage.tsx` e `frontend/src/styles/login.css` |
+| Entrada com Microsoft | Apenas elemento visual desativado; integração pendente | `frontend/src/features/auth/LoginPage.tsx` |
 | Isolamento por tenant e autorização por perfil | Implementado no servidor | `backend/app/domain/common.py` e dependências de autenticação |
 | Tema escuro/claro, sidebar e navegação | Implementado | `frontend/src/layouts/` e `frontend/src/styles/` |
 | Credores, carteiras, clientes, contratos, títulos, ocorrências e equipes | CRUD básico | `backend/app/modules/records.py` e `frontend/src/features/records/` |

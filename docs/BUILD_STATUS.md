@@ -1,5 +1,11 @@
 # Estado do build — 01/11/2026
 
+## Atualização de 17/11/2026
+
+A tela de login recebeu um novo layout centralizado, fundo roxo, painel translúcido e adaptação para celular conforme o modelo enviado pelo proprietário. O formulário existente, a opção de manter sessão, a visualização da senha e a recuperação de senha continuam disponíveis. A entrada com Microsoft aparece desativada porque a integração ainda não existe.
+
+`npm run build` em `frontend/` passou. A ferramenta de navegador interrompeu a conferência visual antes da captura da página local; por isso, a correspondência visual em desktop e celular ainda precisa ser verificada no navegador.
+
 ## Alteração mais recente
 
 As pastas de testes da API e da interface foram retiradas do repositório, junto com os comandos, configurações e dependências usados apenas por elas. Os arquivos de produção Python e TypeScript foram formatados para leitura, sem mudança intencional de comportamento. A aplicação e os comandos de publicação permanecem nos mesmos caminhos.
