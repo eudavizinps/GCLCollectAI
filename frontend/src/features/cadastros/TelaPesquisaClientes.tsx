@@ -37,6 +37,8 @@ const statuses: Record<string, string> = {
 }
 
 const money = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
+const hasCriteria = (filters: Filters) =>
+  Object.entries(filters).some(([key, value]) => key !== 'q' && value.trim() !== '')
 
 function formatDocument(value: string) {
   const digits = value.replace(/\D/g, '')
@@ -107,6 +109,7 @@ export function CustomerSearchPage() {
   const query = params.get('q') || ''
   const [filters, setFilters] = useState<Filters>({ ...emptyFilters, name: query, q: query })
   const [applied, setApplied] = useState<Filters>({ ...emptyFilters, name: query, q: query })
+  const [hasSearched, setHasSearched] = useState(Boolean(query.trim()))
   const [advanced, setAdvanced] = useState(true)
   const [creditors, setCreditors] = useState<Option[]>([])
   const [portfolios, setPortfolios] = useState<Option[]>([])
@@ -117,17 +120,34 @@ export function CustomerSearchPage() {
   const [sort, setSort] = useState('due_asc')
   const [selected, setSelected] = useState<string[]>([])
   const [openMenu, setOpenMenu] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(Boolean(query.trim()))
   const [error, setError] = useState('')
 
   useEffect(() => {
     const next = { ...emptyFilters, name: query, q: query }
     setFilters(next)
     setApplied(next)
+    setHasSearched(Boolean(query.trim()))
+    setLoading(Boolean(query.trim()))
+    setRows([])
+    setTotal(0)
     setPage(1)
   }, [query])
 
   useEffect(() => {
+    get<SearchResponse>('/customers/search?size=1')
+      .then((data) => {
+        setCreditors(data.creditors)
+        setPortfolios(data.portfolios)
+      })
+      .catch((reason) => setError((reason as Error).message))
+  }, [])
+
+  useEffect(() => {
+    if (!hasSearched || !hasCriteria(applied)) {
+      setLoading(false)
+      return
+    }
     const controller = new AbortController()
     const searchParams = new URLSearchParams({ page: String(page), size: String(size), sort })
     Object.entries(applied).forEach(([key, value]) => {
@@ -147,16 +167,31 @@ export function CustomerSearchPage() {
       .catch((reason) => { if (!controller.signal.aborted) setError((reason as Error).message) })
       .finally(() => { if (!controller.signal.aborted) setLoading(false) })
     return () => controller.abort()
-  }, [applied, page, size, sort])
+  }, [applied, hasSearched, page, size, sort])
 
+  const updateFilters = (next: Filters) => {
+    setFilters(next)
+    setHasSearched(false)
+    setRows([])
+    setTotal(0)
+    setSelected([])
+    setError('')
+  }
   const search = (event: FormEvent) => {
     event.preventDefault()
+    if (!hasCriteria(filters)) return
     setPage(1)
     setApplied({ ...filters, q: filters.name === query ? query : '' })
+    setHasSearched(true)
   }
   const clear = () => {
     setFilters({ ...emptyFilters })
     setApplied({ ...emptyFilters })
+    setHasSearched(false)
+    setRows([])
+    setTotal(0)
+    setSelected([])
+    setError('')
     setPage(1)
   }
   const toggleRow = (id: string) => setSelected((current) =>
@@ -169,7 +204,7 @@ export function CustomerSearchPage() {
   return <div className="customer-search-page">
     <div className="customer-page-heading">
       <span className="customer-heading-icon"><UsersRound size={28} /></span>
-      <div><h1>Pesquisa de Clientes</h1><p>Encontre clientes da sua carteira e filtre conforme a necessidade.</p></div>
+      <div><h1>Pesquisa de Clientes</h1><p>Encontre clientes cadastrados e filtre conforme a necessidade.</p></div>
     </div>
 
     <form className="customer-search-panel" onSubmit={search}>
@@ -182,36 +217,37 @@ export function CustomerSearchPage() {
         </div>
       </div>
       <div className="customer-filters-grid">
-        {field('Nome do Cliente', 'name', filters, setFilters, 'Digite o nome do cliente', UserRound)}
-        {field('CPF / CNPJ', 'document', filters, setFilters, '000.000.000-00', IdCard)}
-        {field('Contrato', 'contract', filters, setFilters, 'Digite o nº do contrato', FileText)}
-        {field('Telefone', 'phone', filters, setFilters, '(21) 90000-0000', Phone)}
+        {field('Nome do Cliente', 'name', filters, updateFilters, 'Digite o nome do cliente', UserRound)}
+        {field('CPF / CNPJ', 'document', filters, updateFilters, '000.000.000-00', IdCard)}
+        {field('Contrato', 'contract', filters, updateFilters, 'Digite o nº do contrato', FileText)}
+        {field('Telefone', 'phone', filters, updateFilters, '(21) 90000-0000', Phone)}
         {advanced && <>
-          {choice('Credor', 'creditor_id', filters, setFilters, FileText, [
+          {choice('Credor', 'creditor_id', filters, updateFilters, FileText, [
             { value: '', label: 'Selecione o credor' },
             ...creditors.map((item) => ({ value: item.id, label: String(item.name || '') })),
           ])}
-          {choice('Produto', 'portfolio_id', filters, setFilters, Layers3, [
+          {choice('Produto', 'portfolio_id', filters, updateFilters, Layers3, [
             { value: '', label: 'Selecione o produto' },
             ...portfolios.map((item) => ({ value: item.id, label: String(item.name || '') })),
           ])}
-          {choice('Status da Cobrança', 'collection_status', filters, setFilters, List, [
+          {choice('Status da Cobrança', 'collection_status', filters, updateFilters, List, [
             { value: '', label: 'Todos os status' },
             ...Object.entries(statuses).map(([value, label]) => ({ value, label })),
           ])}
-          {choice('Situação do Acordo', 'agreement_status', filters, setFilters, ClipboardList, [
+          {choice('Situação do Acordo', 'agreement_status', filters, updateFilters, ClipboardList, [
             { value: '', label: 'Todos' }, { value: 'active', label: 'Acordo ativo' },
             { value: 'paid', label: 'Acordo quitado' }, { value: 'none', label: 'Sem acordo' },
           ])}
-          {range('Vencimento', 'due_from', 'due_to', filters, setFilters, CalendarDays, 'date')}
-          {range('Valor da Dívida', 'amount_from', 'amount_to', filters, setFilters, Search, 'number')}
-          {range('Atraso (dias)', 'delay_from', 'delay_to', filters, setFilters, CalendarDays, 'number')}
+          {range('Vencimento', 'due_from', 'due_to', filters, updateFilters, CalendarDays, 'date')}
+          {range('Valor da Dívida', 'amount_from', 'amount_to', filters, updateFilters, Search, 'number')}
+          {range('Atraso (dias)', 'delay_from', 'delay_to', filters, updateFilters, CalendarDays, 'number')}
         </>}
-        <button className="customer-search-button" type="submit"><Search size={20} /> Pesquisar Clientes</button>
+        <button className="customer-search-button" type="submit" disabled={!hasCriteria(filters)}><Search size={20} /> Pesquisar Clientes</button>
       </div>
     </form>
 
-    <section className="customer-results-panel" aria-label="Resultado da pesquisa">
+    {error && !hasSearched && <div className="error-banner" role="alert">{error}</div>}
+    {hasSearched && <section className="customer-results-panel" aria-label="Resultado da pesquisa">
       <div className="customer-results-heading">
         <div className="customer-results-title"><span className="customer-list-icon"><List size={20} /></span>
           <h2>Resultado da Pesquisa</h2><span className="customer-count">{total} clientes encontrados</span>
@@ -278,6 +314,6 @@ export function CustomerSearchPage() {
           <button type="button" aria-label="Próxima página" disabled={page >= pages} onClick={() => setPage(page + 1)}><ChevronRight size={18} /></button>
         </div>
       </div>
-    </section>
+    </section>}
   </div>
 }

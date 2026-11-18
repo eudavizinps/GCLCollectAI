@@ -2,7 +2,7 @@
 
 ## Pesquisa de clientes — 18/11/2026
 
-A tela `/app/clientes` permite pesquisar por nome, CPF/CNPJ, contrato, telefone, credor, produto (carteira), status da cobrança, situação do acordo, vencimento, valor em aberto e dias de atraso. Os resultados têm ordenação, paginação e acesso à ficha e ligação. Todos os três perfis consultam todos os clientes cadastrados da própria empresa, inclusive quitados e inativos. Ações como registrar ocorrência e alterar ficha continuam limitadas às carteiras autorizadas para o Operador. Produto corresponde à carteira nesta demonstração, pois não existe um cadastro separado de produtos.
+A tela `/app/clientes` permite pesquisar por nome, CPF/CNPJ, contrato, telefone, credor, produto (carteira), status da cobrança, situação do acordo, vencimento, valor em aberto e dias de atraso. A lista de resultados fica oculta até o usuário preencher ao menos um filtro e pesquisar; ao alterar ou limpar filtros, ela volta a ficar oculta. Os resultados têm ordenação, paginação e acesso à ficha e ligação. Todos os três perfis consultam todos os clientes cadastrados da própria empresa, inclusive quitados e inativos. Ações como registrar ocorrência e alterar ficha continuam limitadas às carteiras autorizadas para o Operador. Produto corresponde à carteira nesta demonstração, pois não existe um cadastro separado de produtos.
 
 ## Login — 17/11/2026
 

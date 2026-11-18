@@ -29,6 +29,7 @@
 .customer-range-inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .customer-search-button{display:flex;align-items:center;justify-content:center;gap:11px;width:100%;height:44px;border:0;border-radius:9px;color:#fff;background:linear-gradient(180deg,#9225f8,#6210c6);box-shadow:0 9px 20px #620bb63b;font-weight:800;font-size:13px}
 .customer-search-button:hover{filter:brightness(1.13)}
+.customer-search-button:disabled{opacity:.5;cursor:not-allowed;filter:none}
 .customer-results-panel{overflow:visible}
 .customer-results-heading{padding:11px 20px;border-bottom:1px solid #ffffff20}
 .customer-results-title{display:flex;align-items:center;gap:13px;min-width:0}

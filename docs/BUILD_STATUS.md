@@ -4,6 +4,8 @@
 
 A rota `/app/clientes` abre o painel de pesquisa inspirado no modelo enviado. A API `/api/v1/customers/search` calcula valor em aberto, vencimento, atraso e situação do acordo a partir dos registros do tenant, com filtros e paginação no servidor. Administrador, Supervisor e Operador podem consultar todos os clientes do próprio tenant, inclusive quitados, suspensos e inativos. O Operador continua limitado às carteiras da equipe para registrar ocorrências e alterar fichas.
 
+Na abertura da página, a tabela de clientes não aparece. É preciso preencher ao menos um filtro para habilitar o botão de pesquisa. Alterar ou limpar os filtros oculta os resultados anteriores. Uma busca iniciada pelo campo global da barra superior continua abrindo a página com o resultado correspondente.
+
 Verificação local: `npm run build` em `frontend/`, compilação Python, preparação do pacote Cloudflare e `git diff --check` passaram. A API retornou os mesmos 30 clientes para os três perfis. O Operador abriu a ficha de um cliente fora de sua equipe; a alteração dessa ficha foi recusada com 404. Filtros por documento, contrato, credor, carteira, acordo, valor e atraso, além de ordenação, paginação e busca sem resultados, responderam corretamente. A conferência visual automática não foi possível nesta sessão porque o acesso ao navegador estava indisponível.
 
 ## Nomes e localização do código — 18/11/2026
