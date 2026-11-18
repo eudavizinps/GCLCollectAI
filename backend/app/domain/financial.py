@@ -5,7 +5,7 @@ from decimal import Decimal, ROUND_HALF_UP
 
 from fastapi import HTTPException
 
-from app.domain.common import get_scoped
+from app.domain.comum import get_scoped
 
 CENT = Decimal("0.01")
 

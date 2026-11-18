@@ -10,7 +10,7 @@ import tempfile
 import time
 from typing import Callable, TypeVar
 
-from app.core.config import DATA_PATH
+from app.core.configuracao import DATA_PATH
 
 T = TypeVar("T")
 _durable_storage: ContextVar[object | None] = ContextVar(
@@ -31,14 +31,14 @@ def unbind_durable_storage(token) -> None:
 def _durable_read(storage: object) -> dict:
     raw = storage.kv.get(_DURABLE_KEY)
     if raw is None:
-        from app.core.demo_seed import INITIAL_JSON
+        from app.core.dados_demo import INITIAL_JSON
 
         raw = INITIAL_JSON
         storage.kv.put(_DURABLE_KEY, raw)
     data = json.loads(str(raw))
     if data.get("demo_accounts_version") != 1:
-        from app.core.demo_credentials import update_demo_accounts
-        from app.core.security import demo_password_hash
+        from app.core.acessos_demo import update_demo_accounts
+        from app.core.seguranca import demo_password_hash
 
         if update_demo_accounts(data, demo_password_hash):
             storage.kv.put(_DURABLE_KEY, json.dumps(data, ensure_ascii=False))

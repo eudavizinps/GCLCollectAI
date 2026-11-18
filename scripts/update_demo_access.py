@@ -6,8 +6,8 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend" / ".deps"))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
 
-from app.core.demo_credentials import DEMO_ACCOUNTS, update_demo_accounts
-from app.core.security import password_hash, password_matches
+from app.core.acessos_demo import DEMO_ACCOUNTS, update_demo_accounts
+from app.core.seguranca import password_hash, password_matches
 from app.core.storage import change, read
 
 

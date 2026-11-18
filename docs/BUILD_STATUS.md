@@ -1,5 +1,11 @@
 # Estado do build — 01/11/2026
 
+## Nomes e localização do código — 18/11/2026
+
+As telas em `frontend/src/features/` foram agrupadas em pastas de domínio com nomes em português. Arquivos de entrada, sessão, navegação, componentes, estilos e serviços receberam nomes mais claros. As rotas da API agora estão em módulos chamados `autenticacao.py`, `administracao.py`, `cadastros.py`, `financeiro.py` e `indicadores_ia.py`. Os guias ficam em `docs/arquitetura/`, `docs/publicacao/` e `docs/planejamento/`. O [mapa de arquivos](arquitetura/mapa-de-arquivos.md) aponta para cada área.
+
+Os caminhos exigidos pelas ferramentas e pelas regras do projeto, como `backend/app/core/storage.py`, `backend/app/domain/financial.py`, `scripts/seed_demo.py` e `frontend/src/components/shared/`, foram mantidos. As URLs da aplicação e da API não foram alteradas. O build do frontend, a compilação Python, o início da API, as rotas principais e a preparação do pacote Cloudflare passaram após a reorganização.
+
 ## Acessos demonstrativos — 17/11/2026
 
 Os acessos de Administrador, Supervisor e Operador da empresa Aurora foram alterados para as três credenciais de teste fornecidas pelo proprietário. O seed novo e o armazenamento local usam os novos dados. Uma migração única no adapter de armazenamento atualiza as contas já persistidas na Cloudflare sem apagar os dados fictícios; sessões anteriores dessas contas são encerradas. A empresa Horizonte mantém os acessos demonstrativos anteriores.

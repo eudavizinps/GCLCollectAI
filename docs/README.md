@@ -6,7 +6,7 @@ Comece pelo [README principal](../README.md) para instalar e executar o CollectA
 
 | Assunto | Local |
 | --- | --- |
-| Rotas e autenticação da API | `backend/app/modules/` e `backend/app/core/security.py` |
+| Rotas e autenticação da API | `backend/app/modules/` e `backend/app/core/seguranca.py` |
 | Regras e cálculos financeiros | `backend/app/domain/financial.py` |
 | Persistência local e no Worker | `backend/app/core/storage.py` |
 | Telas e fluxos da interface | `frontend/src/features/`, separados por domínio |
@@ -15,27 +15,27 @@ Comece pelo [README principal](../README.md) para instalar e executar o CollectA
 | Configuração Cloudflare | `cloudflare/` |
 | Comandos para executar, popular e publicar | `scripts/` |
 
-O [mapa de arquivos](architecture/file-map.md) detalha os arquivos principais. As regras de contribuição e os limites de segurança estão em [AGENTS.md](../AGENTS.md).
+O [mapa de arquivos](arquitetura/mapa-de-arquivos.md) detalha os arquivos principais. As regras de contribuição e os limites de segurança estão em [AGENTS.md](../AGENTS.md).
 
 ## Documentação por assunto
 
 ### Arquitetura e regras
 
-- [Visão da arquitetura](architecture/overview.md)
-- [Rotas da API](architecture/api.md)
-- [Regras de negócio](architecture/business-rules.md)
-- [Desenho de dados](architecture/database-design.md)
-- [Mapa de arquivos](architecture/file-map.md)
+- [Visão da arquitetura](arquitetura/visao-geral.md)
+- [Rotas da API](arquitetura/api.md)
+- [Regras de negócio](arquitetura/regras-de-negocio.md)
+- [Desenho de dados](arquitetura/modelo-de-dados.md)
+- [Mapa de arquivos](arquitetura/mapa-de-arquivos.md)
 
 ### Publicação
 
-- [Demonstração no Cloudflare](deployment/cloudflare-demo.md)
-- [Deploy automático pelo GitHub](deployment/cloudflare-git.md)
+- [Demonstração no Cloudflare](publicacao/cloudflare-demo.md)
+- [Deploy automático pelo GitHub](publicacao/cloudflare-github.md)
 
 ### Planejamento e acompanhamento
 
-- [Backlog](planning/backlog.md)
-- [Plano histórico de commits](planning/commit-plan.md)
+- [Backlog](planejamento/pendencias.md)
+- [Plano histórico de commits](planejamento/plano-de-commits.md)
 - [Matriz de funcionalidades](FEATURE_MATRIX.md)
 - [Estado do build](BUILD_STATUS.md)
 

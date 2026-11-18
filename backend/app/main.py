@@ -3,8 +3,8 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.core.config import DATA_PATH, FRONTEND_ORIGIN
-from app.modules import admin, auth, finance, insights, records
+from app.core.configuracao import DATA_PATH, FRONTEND_ORIGIN
+from app.modules import administracao, autenticacao, cadastros, financeiro, indicadores_ia
 
 CLOUDFLARE_RUNTIME = False
 
@@ -48,10 +48,10 @@ def health():
 
 
 for router in (
-    auth.router,
-    finance.router,
-    insights.router,
-    admin.router,
-    records.router,
+    autenticacao.router,
+    financeiro.router,
+    indicadores_ia.router,
+    administracao.router,
+    cadastros.router,
 ):
     app.include_router(router, prefix="/api/v1")

@@ -29,43 +29,50 @@ Alternativamente, com Docker instalado: `docker compose up --build` (configuraç
 
 O seed não substitui dados existentes. Para recriar o ambiente fictício, execute `python scripts/seed_demo.py --reset`; um backup JSON é criado antes da troca. Os dados continuam disponíveis após reiniciar o servidor.
 
-## Credenciais locais de demonstração
+## Credenciais de demonstração
 
-| Empresa | Perfil | E-mail | 
+| Empresa | Perfil | E-mail | Senha |
 | --- | --- | --- | --- |
-| Aurora | Administrador | `admin1@demo.collectai.local` | 
-| Aurora | Superadministrador | `superadmin1@demo.collectai.local` | 
-| Aurora | Supervisor | `supervisor1@demo.collectai.local` | 
-| Aurora | Operador | `operator1@demo.collectai.local` | 
-| Horizonte | Administrador | `admin2@demo.collectai.local` |
-| Horizonte | Superadministrador | `superadmin2@demo.collectai.local` | 
-| Horizonte | Supervisor | `supervisor2@demo.collectai.local` |
-| Horizonte | Operador | `operator2@demo.collectai.local` |
+| Aurora | Administrador | `adminteste@collectai.local` | `admin1234` |
+| Aurora | Supervisor | `supteste@collectai.local` | `sup1234` |
+| Aurora | Operador | `opteste@collectai.local` | `op12345` |
+| Horizonte | Administrador | `admin2@demo.collectai.local` | `Demo@12345` |
+| Horizonte | Supervisor | `supervisor2@demo.collectai.local` | `Demo@12345` |
+| Horizonte | Operador | `operator2@demo.collectai.local` | `Demo@12345` |
+
+O perfil Superadministrador permanece desativado.
 
 Essas credenciais são públicas e destinam-se somente à demonstração com dados fictícios. Não use dados reais, senhas pessoais ou documentos verdadeiros nesta instância.
 
 ## Demonstração no Cloudflare
 
-Endereço público: https://collectai-demo.davi-de-paula035.workers.dev. O fluxo de deploy por commit está documentado em [Deploy automático pelo GitHub](docs/deployment/cloudflare-git.md).
+Endereço público: https://collectai-demo.davi-de-paula035.workers.dev. O fluxo de deploy por commit está documentado em [Deploy automático pelo GitHub](docs/publicacao/cloudflare-github.md).
 
 O Worker em `cloudflare/wrangler.jsonc` executa a API FastAPI e serve o build React no mesmo endereço. Um Durable Object guarda alterações feitas na demonstração entre reinicializações. Os dados iniciais são fictícios e gerados por `python scripts/export_cloudflare_seed.py`.
 
-No Windows, execute `powershell.exe -ExecutionPolicy Bypass -File scripts/cloudflare.ps1 -Action dev` para testar em `http://127.0.0.1:8787`. Após autorizar o Wrangler com `-Action login`, publique com `-Action deploy`. O script contorna um problema do pywrangler com espaços no caminho do usuário criando temporariamente a unidade `X:`. Veja [instruções de publicação](docs/deployment/cloudflare-demo.md).
+No Windows, execute `powershell.exe -ExecutionPolicy Bypass -File scripts/cloudflare.ps1 -Action dev` para testar em `http://127.0.0.1:8787`. Após autorizar o Wrangler com `-Action login`, publique com `-Action deploy`. O script contorna um problema do pywrangler com espaços no caminho do usuário criando temporariamente a unidade `X:`. Veja [instruções de publicação](docs/publicacao/cloudflare-demo.md).
 
 ## Estrutura
 
 ```text
 backend/
-  app/core/          configuração, sessões e persistência
-  app/domain/        regras de negócio e cálculos financeiros
-  app/modules/       rotas HTTP por área
+  app/modules/       rotas de autenticação, cadastros, financeiro e indicadores
+  app/domain/        permissões e cálculo financeiro
+  app/core/          segurança, configuração, dados demo e armazenamento
 frontend/
-  src/features/      telas organizadas por domínio
-  src/components/    componentes reutilizáveis e marca
-  src/app/           rotas, navegação e autenticação
-cloudflare/          configuração e entrada do Worker
-scripts/             comandos de desenvolvimento, seed e deploy
-docs/               arquitetura, publicação, planejamento e status
+  src/features/      autenticacao, painel, cadastros, cobrancas, financeiro,
+                     agentes_ia, usuarios, relatorios, indicadores e outras telas
+  src/app/           rotas, sessão, permissões e navegação
+  src/components/    peças compartilhadas e marca
+  src/estrutura/     estrutura visual das páginas internas
+  src/estilos/       tema, login e responsividade
+  src/servicos/      comunicação com a API e exportação CSV
+docs/
+  arquitetura/       mapa de arquivos, regras e modelo de dados
+  publicacao/        guias da Cloudflare e do GitHub
+  planejamento/      pendências e histórico de commits
+scripts/             comandos de desenvolvimento, dados demo e publicação
+cloudflare/          entrada e configuração do Worker
 ```
 
 O [índice da documentação](docs/README.md) explica onde encontrar cada assunto. Os diretórios `.cloudflare-build/`, `.cloudflare-dev/` e `frontend/dist/` são gerados localmente e ignorados pelo Git.
@@ -91,4 +98,4 @@ O cookie de sessão usa `HttpOnly` e `SameSite=Lax`; em HTTPS também usa `Secur
 
 ## Migração futura
 
-O contrato do adapter em `backend/app/core/storage.py` pode ser substituído por repositórios SQLAlchemy com PostgreSQL e Alembic. O domínio financeiro deve continuar responsável pelos cálculos e transições. Veja [desenho de dados](docs/architecture/database-design.md).
+O contrato do adapter em `backend/app/core/storage.py` pode ser substituído por repositórios SQLAlchemy com PostgreSQL e Alembic. O domínio financeiro deve continuar responsável pelos cálculos e transições. Veja [desenho de dados](docs/arquitetura/modelo-de-dados.md).

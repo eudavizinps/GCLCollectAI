@@ -7,8 +7,8 @@ import textwrap
 import zlib
 
 from seed_demo import build
-from app.core.demo_credentials import password_for_demo_user
-from app.core.security import demo_password_hash
+from app.core.acessos_demo import password_for_demo_user
+from app.core.seguranca import demo_password_hash
 
 root = Path(__file__).resolve().parents[1]
 fictional = build()
@@ -16,7 +16,7 @@ for user in fictional["users"]:
     user["password_hash"] = demo_password_hash(password_for_demo_user(user))
 data = json.dumps(fictional, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
 encoded = base64.b85encode(zlib.compress(data, level=9)).decode("ascii")
-target = root / "backend" / "app" / "core" / "demo_seed.py"
+target = root / "backend" / "app" / "core" / "dados_demo.py"
 lines = [
     '"""Bundled fictional data; regenerate with python scripts/export_cloudflare_seed.py."""',
     "import base64",

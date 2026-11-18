@@ -11,11 +11,11 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend" / ".deps"))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
 
-from app.core.config import DATA_PATH
-from app.core.demo_credentials import DEMO_ACCOUNTS, DEMO_ACCOUNTS_VERSION
-from app.core.security import password_hash
+from app.core.configuracao import DATA_PATH
+from app.core.acessos_demo import DEMO_ACCOUNTS, DEMO_ACCOUNTS_VERSION
+from app.core.seguranca import password_hash
 from app.core.storage import change
-from app.domain.common import new_id, now
+from app.domain.comum import new_id, now
 
 ENABLE_LEGACY_SUPERADMIN = False
 
