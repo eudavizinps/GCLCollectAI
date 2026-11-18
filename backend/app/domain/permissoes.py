@@ -43,6 +43,8 @@ def require_customer_access(db: dict, user: dict, customer_id: str) -> dict:
 
 def visible_records(db: dict, resource: str, user: dict) -> list[dict]:
     items = scoped(db, resource, user["tenant_id"])
+    if resource == "customers":
+        return items
     if user["role"] != "operator":
         return items
     portfolios = operator_portfolio_ids(db, user)
@@ -52,8 +54,6 @@ def visible_records(db: dict, resource: str, user: dict) -> list[dict]:
         for item in scoped(db, "customers", user["tenant_id"])
         if item.get("portfolio_id") in portfolios
     }
-    if resource == "customers":
-        return [item for item in items if item["id"] in customers]
     if resource == "portfolios":
         return [item for item in items if item["id"] in portfolios]
     if resource == "creditors":
@@ -101,6 +101,6 @@ def visible_records(db: dict, resource: str, user: dict) -> list[dict]:
 
 def require_record_access(db: dict, resource: str, item_id: str, user: dict) -> dict:
     item = get_scoped(db, resource, item_id, user["tenant_id"])
-    if user["role"] == "operator" and item not in visible_records(db, resource, user):
+    if resource != "customers" and user["role"] == "operator" and item not in visible_records(db, resource, user):
         raise HTTPException(404, "Registro não encontrado")
     return item

@@ -48,6 +48,7 @@
 .customer-results-table input[type=checkbox]{width:17px;height:17px;vertical-align:middle;accent-color:#8b26e7}
 .customer-name a{font-weight:700}
 .customer-name a:hover{color:#cb91ff}
+.customer-inactive{display:inline-block;margin-left:6px;padding:3px 6px;border-radius:5px;background:#5f576a;color:#eee1fa;font-size:9px;font-weight:700}
 .customer-name small{display:none;color:var(--text-secondary);font-size:10px;margin-top:3px}
 .customer-delay,.customer-status{display:inline-block;border-radius:20px;padding:4px 9px;font-size:10px;font-weight:800}
 .customer-delay,.customer-status.overdue{background:#8c121b70;color:#ffb1b4}

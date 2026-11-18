@@ -7,7 +7,8 @@ from fastapi import APIRouter, Depends, Query
 
 from app.core.seguranca import current_user
 from app.core.storage import read
-from app.domain.permissoes import visible_records
+from app.domain.comum import scoped
+from app.domain.permissoes import operator_portfolio_ids, visible_records
 
 router = APIRouter(tags=["customers"])
 
@@ -40,11 +41,13 @@ def search_customers(
 ):
     db = read()
     customers = visible_records(db, "customers", user)
-    portfolios = {item["id"]: item for item in visible_records(db, "portfolios", user)}
-    creditors = {item["id"]: item for item in visible_records(db, "creditors", user)}
-    contracts = visible_records(db, "contracts", user)
-    receivables = visible_records(db, "receivables", user)
-    agreements = visible_records(db, "agreements", user)
+    tenant_id = user["tenant_id"]
+    portfolios = {item["id"]: item for item in scoped(db, "portfolios", tenant_id)}
+    creditors = {item["id"]: item for item in scoped(db, "creditors", tenant_id)}
+    contracts = scoped(db, "contracts", tenant_id)
+    receivables = scoped(db, "receivables", tenant_id)
+    agreements = scoped(db, "agreements", tenant_id)
+    manageable_portfolios = operator_portfolio_ids(db, user) if user["role"] == "operator" else None
     today = date.today()
     results = []
 
@@ -111,6 +114,7 @@ def search_customers(
         results.append({
             "id": customer["id"],
             "name": customer.get("name", ""),
+            "customer_status": customer.get("status", "active"),
             "document": customer.get("document", ""),
             "phone": customer.get("phone", ""),
             "contract": next(
@@ -124,6 +128,7 @@ def search_customers(
             "delay_days": delay,
             "status": status,
             "agreement_status": agreement,
+            "can_manage": manageable_portfolios is None or customer.get("portfolio_id") in manageable_portfolios,
         })
 
     if sort == "name":
@@ -135,4 +140,15 @@ def search_customers(
     else:
         results.sort(key=lambda item: item["due_date"] or ("0000-00-00" if sort == "due_desc" else "9999-12-31"), reverse=sort == "due_desc")
 
-    return {"items": results[(page - 1) * size : page * size], "total": len(results), "page": page, "size": size}
+    return {
+        "items": results[(page - 1) * size : page * size],
+        "total": len(results), "page": page, "size": size,
+        "creditors": sorted(
+            [{"id": item["id"], "name": item.get("name", "")} for item in creditors.values()],
+            key=lambda item: item["name"].casefold(),
+        ),
+        "portfolios": sorted(
+            [{"id": item["id"], "name": item.get("name", "")} for item in portfolios.values()],
+            key=lambda item: item["name"].casefold(),
+        ),
+    }

@@ -11,6 +11,7 @@ from app.core.storage import change, read
 from app.domain.permissoes import (
     ACTIVE_ROLES,
     operator_team_id,
+    operator_portfolio_ids,
     require_customer_access,
     require_record_access,
     visible_records,
@@ -223,7 +224,15 @@ def detail(resource: str, item_id: str, user: dict = Depends(current_user)):
         "supervisor",
     ):
         raise HTTPException(403, "Permissão insuficiente")
-    return require_record_access(read(), resource, item_id, user)
+    db = read()
+    item = require_record_access(db, resource, item_id, user)
+    if resource == "customers":
+        return {
+            **item,
+            "can_manage": user["role"] != "operator"
+            or item.get("portfolio_id") in operator_portfolio_ids(db, user),
+        }
+    return item
 
 
 @router.post("/{resource}")

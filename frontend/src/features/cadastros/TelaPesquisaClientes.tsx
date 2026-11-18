@@ -5,7 +5,7 @@ import {
   Eye, FileText, Filter, IdCard, Layers3, List, MoreVertical,
   Phone, Search, SlidersHorizontal, UserRound, UsersRound, X,
 } from 'lucide-react'
-import { get, type Paged, type RecordItem } from '../../servicos/api'
+import { get, type Paged } from '../../servicos/api'
 
 type Filters = {
   q: string
@@ -16,10 +16,13 @@ type Filters = {
 }
 
 type CustomerResult = {
-  id: string; name: string; document: string; phone: string; contract: string
+  id: string; name: string; customer_status: string; document: string; phone: string; contract: string
   creditor: string; portfolio: string; amount: string; due_date: string | null
   delay_days: number; status: string; agreement_status: string
+  can_manage: boolean
 }
+type Option = { id: string; name: string }
+type SearchResponse = Paged<CustomerResult> & { creditors: Option[]; portfolios: Option[] }
 
 const emptyFilters: Filters = {
   q: '',
@@ -105,8 +108,8 @@ export function CustomerSearchPage() {
   const [filters, setFilters] = useState<Filters>({ ...emptyFilters, name: query, q: query })
   const [applied, setApplied] = useState<Filters>({ ...emptyFilters, name: query, q: query })
   const [advanced, setAdvanced] = useState(true)
-  const [creditors, setCreditors] = useState<RecordItem[]>([])
-  const [portfolios, setPortfolios] = useState<RecordItem[]>([])
+  const [creditors, setCreditors] = useState<Option[]>([])
+  const [portfolios, setPortfolios] = useState<Option[]>([])
   const [rows, setRows] = useState<CustomerResult[]>([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
@@ -125,15 +128,6 @@ export function CustomerSearchPage() {
   }, [query])
 
   useEffect(() => {
-    Promise.all([get<Paged<RecordItem>>('/creditors?size=100'), get<Paged<RecordItem>>('/portfolios?size=100')])
-      .then(([creditorData, portfolioData]) => {
-        setCreditors(creditorData.items)
-        setPortfolios(portfolioData.items)
-      })
-      .catch((reason) => setError((reason as Error).message))
-  }, [])
-
-  useEffect(() => {
     const controller = new AbortController()
     const searchParams = new URLSearchParams({ page: String(page), size: String(size), sort })
     Object.entries(applied).forEach(([key, value]) => {
@@ -141,11 +135,13 @@ export function CustomerSearchPage() {
     })
     setLoading(true)
     setError('')
-    get<Paged<CustomerResult>>(`/customers/search?${searchParams}`)
+    get<SearchResponse>(`/customers/search?${searchParams}`)
       .then((data) => {
         if (controller.signal.aborted) return
         setRows(data.items)
         setTotal(data.total)
+        setCreditors(data.creditors)
+        setPortfolios(data.portfolios)
         setSelected([])
       })
       .catch((reason) => { if (!controller.signal.aborted) setError((reason as Error).message) })
@@ -246,7 +242,9 @@ export function CustomerSearchPage() {
           <tbody>
             {rows.map((row) => <tr key={row.id}>
               <td><input type="checkbox" aria-label={`Selecionar ${row.name}`} checked={selected.includes(row.id)} onChange={() => toggleRow(row.id)} /></td>
-              <td className="customer-name"><Link to={`/app/clientes/${row.id}`}>{row.name}</Link><small>{row.portfolio}</small></td>
+              <td className="customer-name"><Link to={`/app/clientes/${row.id}`}>{row.name}</Link>
+                {row.customer_status !== 'active' && <span className="customer-inactive">{row.customer_status === 'suspended' ? 'Suspenso' : 'Inativo'}</span>}
+                <small>{row.portfolio}</small></td>
               <td>{formatDocument(row.document)}</td><td>{row.contract || '—'}</td><td>{row.creditor || '—'}</td>
               <td>{money.format(Number(row.amount))}</td><td>{formatDate(row.due_date)}</td>
               <td>{row.delay_days ? <span className="customer-delay">{row.delay_days} dias</span> : '—'}</td>
@@ -258,7 +256,7 @@ export function CustomerSearchPage() {
                   aria-expanded={openMenu === row.id} onClick={() => setOpenMenu(openMenu === row.id ? null : row.id)}><MoreVertical size={18} /></button>
                   {openMenu === row.id && <div className="customer-more-menu">
                     <Link to={`/app/clientes/${row.id}`} onClick={() => setOpenMenu(null)}>Ver ficha</Link>
-                    <Link to={`/app/cobrancas/ocorrencias/novo?customer_id=${row.id}`} onClick={() => setOpenMenu(null)}>Registrar ocorrência</Link>
+                    {row.can_manage && <Link to={`/app/cobrancas/ocorrencias/novo?customer_id=${row.id}`} onClick={() => setOpenMenu(null)}>Registrar ocorrência</Link>}
                   </div>}
                 </div>
               </div></td>

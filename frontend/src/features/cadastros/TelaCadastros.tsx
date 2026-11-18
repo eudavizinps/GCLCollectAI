@@ -103,11 +103,11 @@ export function RecordPage({ config }: { config: ResourceConfig }) {
     else setDetail(null)
   }, [config.resource, itemId, refresh])
   useEffect(() => {
-    if (config.resource !== 'customers' || !itemId) return
+    if (config.resource !== 'customers' || !itemId || detail?.id !== itemId || detail.can_manage === false) return
     get<User[]>(`/operators?customer_id=${encodeURIComponent(itemId)}`)
       .then(setOperators)
       .catch((err) => setError(err.message))
-  }, [config.resource, itemId, refresh])
+  }, [config.resource, itemId, detail?.id, detail?.can_manage, refresh])
   useEffect(() => {
     const refs = [
       ...new Set(config.fields.map((field) => field.resource).filter(Boolean)),
@@ -117,7 +117,11 @@ export function RecordPage({ config }: { config: ResourceConfig }) {
         async (resource) =>
           [
             resource,
-            resource === 'users'
+            resource === 'portfolios' && config.resource === 'customers'
+              ? (await get<{ portfolios: { id: string; name: string }[] }>('/customers/search?size=1')).portfolios.map(
+                  (item) => ({ ...item, tenant_id: '' }),
+                )
+              : resource === 'users'
               ? await get<RecordItem[]>('/users')
               : (await get<Paged<RecordItem>>(`/${resource}?size=100`)).items,
           ] as const,
@@ -211,8 +215,9 @@ export function RecordPage({ config }: { config: ResourceConfig }) {
     !config.readOnly &&
     ['admin', 'supervisor'].includes(user?.role || '')
   const canCreate = canEdit || (config.resource === 'occurrences' && user?.role === 'operator')
+  const canManageCustomer = detail?.can_manage !== false
   const customerActions =
-    config.resource === 'customers' && detail ? (
+    config.resource === 'customers' && detail && canManageCustomer ? (
       <div className="inline-actions">
         <Link
           className="secondary-button"
@@ -231,7 +236,7 @@ export function RecordPage({ config }: { config: ResourceConfig }) {
   const details = useMemo(
     () =>
       detail
-        ? Object.entries(detail).filter(([key]) => !['id', 'tenant_id', 'operator_id'].includes(key))
+        ? Object.entries(detail).filter(([key]) => !['id', 'tenant_id', 'operator_id', 'can_manage'].includes(key))
         : [],
     [detail],
   )
@@ -307,7 +312,7 @@ export function RecordPage({ config }: { config: ResourceConfig }) {
               ))}
             </div>
             {customerActions}
-            {config.resource === 'customers' && (
+            {config.resource === 'customers' && canManageCustomer && (
               <div className="dashboard-grid">
                 <form className="panel customer-contact-panel" onSubmit={saveContact}>
                   <h2>Atualizar contato</h2>
