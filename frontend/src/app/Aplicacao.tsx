@@ -18,6 +18,9 @@ const DashboardPage = lazy(() =>
 const RecordPage = lazy(() =>
   import('../features/cadastros/TelaCadastros').then((m) => ({ default: m.RecordPage })),
 )
+const CustomerSearchPage = lazy(() =>
+  import('../features/cadastros/TelaPesquisaClientes').then((m) => ({ default: m.CustomerSearchPage })),
+)
 const QueuePage = lazy(() =>
   import('../features/cobrancas/TelaFilaCobranca').then((m) => ({ default: m.QueuePage })),
 )
@@ -63,6 +66,7 @@ function AppContent() {
   if (path.startsWith('/app/configuracoes')) return <SettingsPage />
   if (path.startsWith('/app/perfil')) return <ProfilePage />
   if (path.startsWith('/app/notificacoes')) return <NotificationsPage />
+  if (path === '/app/clientes') return <CustomerSearchPage />
   const resource = Object.values(resources).find(
     (item) => path === item.path || path.startsWith(item.path + '/'),
   )

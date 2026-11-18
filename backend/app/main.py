@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.core.configuracao import DATA_PATH, FRONTEND_ORIGIN
-from app.modules import administracao, autenticacao, cadastros, financeiro, indicadores_ia
+from app.modules import administracao, autenticacao, cadastros, financeiro, indicadores_ia, pesquisa_clientes
 
 CLOUDFLARE_RUNTIME = False
 
@@ -52,6 +52,7 @@ for router in (
     financeiro.router,
     indicadores_ia.router,
     administracao.router,
+    pesquisa_clientes.router,
     cadastros.router,
 ):
     app.include_router(router, prefix="/api/v1")

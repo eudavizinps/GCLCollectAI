@@ -1,5 +1,11 @@
 # Estado do build — 01/11/2026
 
+## Pesquisa de clientes — 18/11/2026
+
+A rota `/app/clientes` abre o painel de pesquisa inspirado no modelo enviado. A API `/api/v1/customers/search` calcula valor em aberto, vencimento, atraso e situação do acordo a partir dos registros do tenant, com filtros e paginação no servidor. A busca do Operador utiliza somente os clientes e registros das carteiras autorizadas da equipe.
+
+Verificação local: `npm run build` em `frontend/`, compilação Python, preparação do pacote Cloudflare e `git diff --check` passaram. A API retornou 30 clientes para Administrador e Supervisor e 15 para Operador; buscas do Operador por documento e contrato retornaram somente o cliente correspondente. Filtros por credor, carteira, acordo, valor e atraso, além de ordenação, paginação e busca sem resultados, responderam corretamente. A conferência visual automática não foi possível nesta sessão porque o acesso ao navegador estava indisponível.
+
 ## Nomes e localização do código — 18/11/2026
 
 As telas em `frontend/src/features/` foram agrupadas em pastas de domínio com nomes em português. Arquivos de entrada, sessão, navegação, componentes, estilos e serviços receberam nomes mais claros. As rotas da API agora estão em módulos chamados `autenticacao.py`, `administracao.py`, `cadastros.py`, `financeiro.py` e `indicadores_ia.py`. Os guias ficam em `docs/arquitetura/`, `docs/publicacao/` e `docs/planejamento/`. O [mapa de arquivos](arquitetura/mapa-de-arquivos.md) aponta para cada área.

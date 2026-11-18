@@ -7,6 +7,7 @@ import './estilos/tema.css'
 import './estilos/geral.css'
 import './estilos/login.css'
 import './estilos/responsividade.css'
+import './estilos/pesquisa-clientes.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

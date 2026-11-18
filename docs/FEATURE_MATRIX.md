@@ -1,5 +1,9 @@
 # Matriz de funcionalidades — 01/11/2026
 
+## Pesquisa de clientes — 18/11/2026
+
+A tela `/app/clientes` permite pesquisar por nome, CPF/CNPJ, contrato, telefone, credor, produto (carteira), status da cobrança, situação do acordo, vencimento, valor em aberto e dias de atraso. Os resultados têm ordenação, paginação e acesso à ficha, ligação e registro de ocorrência. A API aplica o tenant da sessão e restringe o Operador às carteiras autorizadas da equipe. Produto corresponde à carteira nesta demonstração, pois não existe um cadastro separado de produtos.
+
 ## Login — 17/11/2026
 
 O login abre com e-mail e senha vazios. Os campos mantêm os identificadores padrão de preenchimento do navegador, para que o usuário possa selecionar credenciais salvas quando o navegador oferecer essa opção.
