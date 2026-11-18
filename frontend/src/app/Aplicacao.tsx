@@ -21,6 +21,9 @@ const RecordPage = lazy(() =>
 const CustomerSearchPage = lazy(() =>
   import('../features/cadastros/TelaPesquisaClientes').then((m) => ({ default: m.CustomerSearchPage })),
 )
+const CustomerRecordPage = lazy(() =>
+  import('../features/cadastros/TelaFichaCliente').then((m) => ({ default: m.CustomerRecordPage })),
+)
 const QueuePage = lazy(() =>
   import('../features/cobrancas/TelaFilaCobranca').then((m) => ({ default: m.QueuePage })),
 )
@@ -67,6 +70,8 @@ function AppContent() {
   if (path.startsWith('/app/perfil')) return <ProfilePage />
   if (path.startsWith('/app/notificacoes')) return <NotificationsPage />
   if (path === '/app/clientes') return <CustomerSearchPage />
+  const customerRecord = path.match(/^\/app\/clientes\/([^/]+)$/)
+  if (customerRecord && customerRecord[1] !== 'novo') return <CustomerRecordPage id={customerRecord[1]} />
   const resource = Object.values(resources).find(
     (item) => path === item.path || path.startsWith(item.path + '/'),
   )

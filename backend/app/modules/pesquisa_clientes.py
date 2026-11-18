@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, Query
 
 from app.core.seguranca import current_user
 from app.core.storage import read
-from app.domain.comum import scoped
+from app.domain.comum import get_scoped, scoped
 from app.domain.permissoes import operator_portfolio_ids, visible_records
 
 router = APIRouter(tags=["customers"])
@@ -15,6 +15,61 @@ router = APIRouter(tags=["customers"])
 
 def digits(value: str) -> str:
     return "".join(char for char in value if char.isdigit())
+
+
+@router.get("/customers/{customer_id}/record")
+def customer_record(customer_id: str, user: dict = Depends(current_user)):
+    db = read()
+    tenant_id = user["tenant_id"]
+    customer = get_scoped(db, "customers", customer_id, tenant_id)
+    portfolio = next(
+        (item for item in scoped(db, "portfolios", tenant_id) if item["id"] == customer.get("portfolio_id")),
+        None,
+    )
+    creditor = next(
+        (item for item in scoped(db, "creditors", tenant_id) if item["id"] == (portfolio or {}).get("creditor_id")),
+        None,
+    )
+    related = {
+        resource: [item for item in scoped(db, resource, tenant_id) if item.get("customer_id") == customer_id]
+        for resource in ("contracts", "receivables", "agreements", "payments", "occurrences")
+    }
+    titles = related["receivables"]
+    open_titles = [item for item in titles if Decimal(str(item.get("balance", "0"))) > 0]
+    balance = sum((Decimal(str(item.get("balance", "0"))) for item in open_titles), Decimal("0"))
+    paid = sum(
+        (Decimal(str(item.get("amount", "0"))) for item in related["payments"] if item.get("status") == "confirmed"),
+        Decimal("0"),
+    )
+    due_dates = [date.fromisoformat(item["due_date"]) for item in open_titles if item.get("due_date")]
+    due_date = min(due_dates) if due_dates else None
+    today = date.today()
+    active_agreement = any(item.get("status") == "active" for item in related["agreements"])
+    status = (
+        "agreement" if active_agreement else
+        "no_debt" if not titles else
+        "paid" if not open_titles else
+        "overdue" if due_date and due_date < today else
+        "due_today" if due_date == today else "collection"
+    )
+    for resource in ("contracts", "receivables", "agreements", "payments", "occurrences"):
+        related[resource].sort(key=lambda item: item.get("at", item.get("created_at", "")), reverse=True)
+    return {
+        "customer": customer,
+        "portfolio": {"id": portfolio["id"], "name": portfolio.get("name", "")} if portfolio else None,
+        "creditor": {"id": creditor["id"], "name": creditor.get("name", "")} if creditor else None,
+        "can_manage": user["role"] != "operator"
+        or customer.get("portfolio_id") in operator_portfolio_ids(db, user),
+        **related,
+        "summary": {
+            "balance": str(balance.quantize(Decimal("0.01"))),
+            "paid": str(paid.quantize(Decimal("0.01"))),
+            "total": str((balance + paid).quantize(Decimal("0.01"))),
+            "due_date": due_date.isoformat() if due_date else None,
+            "delay_days": max((today - due_date).days, 0) if due_date else 0,
+            "status": status,
+        },
+    }
 
 
 @router.get("/customers/search")

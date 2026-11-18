@@ -4,6 +4,10 @@
 
 A tela `/app/clientes` permite pesquisar por nome, CPF/CNPJ, contrato, telefone, credor, produto (carteira), status da cobrança, situação do acordo, vencimento, valor em aberto e dias de atraso. A lista de resultados fica oculta até o usuário preencher ao menos um filtro e pesquisar; ao alterar ou limpar filtros, ela volta a ficar oculta. Os resultados têm ordenação, paginação e acesso à ficha e ligação. Todos os três perfis consultam todos os clientes cadastrados da própria empresa, inclusive quitados e inativos. Ações como registrar ocorrência e alterar ficha continuam limitadas às carteiras autorizadas para o Operador. Produto corresponde à carteira nesta demonstração, pois não existe um cadastro separado de produtos.
 
+## Ficha de atendimento — 18/11/2026
+
+Ao abrir um cliente pesquisado, a ficha mostra identificação, situação de cobrança, cadastro, contatos, endereço, contratos e títulos, resumo financeiro, pagamentos, acordos e ocorrências. As abas organizam as seções. E-mail, WhatsApp, transferência, atualização de contato, nova ocorrência e acesso aos agentes demonstrativos aparecem conforme os dados e a permissão para atuar na carteira. Todos os perfis podem ler a ficha de qualquer cliente da própria empresa; ações sobre clientes fora da equipe continuam bloqueadas para o Operador. A aba Documentos mostra o estado vazio, pois ainda não há armazenamento de documentos. Dados como profissão, renda e estado civil não são exibidos porque não existem no cadastro atual.
+
 ## Login — 17/11/2026
 
 O login abre com e-mail e senha vazios. Os campos mantêm os identificadores padrão de preenchimento do navegador, para que o usuário possa selecionar credenciais salvas quando o navegador oferecer essa opção.

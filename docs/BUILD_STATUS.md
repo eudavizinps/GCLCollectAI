@@ -1,5 +1,11 @@
 # Estado do build — 01/11/2026
 
+## Ficha de atendimento — 18/11/2026
+
+A rota `/app/clientes/:id` usa uma tela de ficha de atendimento inspirada no modelo enviado. A API `/api/v1/customers/:id/record` reúne dados do cliente, contratos, títulos, acordos, pagamentos e ocorrências da empresa da sessão. A leitura é permitida aos três perfis; o retorno informa separadamente se o usuário pode alterar a ficha. O resumo financeiro usa valores decimais dos títulos em aberto e dos pagamentos confirmados. A interface oferece abas, contato, transferência, histórico exportável e atalhos aos agentes demonstrativos existentes. Não exibe dados cadastrais inexistentes nem simula um chat generativo.
+
+Verificação: `npm run build` em `frontend/`, compilação Python e `git diff --check` passaram. Com a sessão do Operador, a API retornou ficha completa para um cliente da equipe e para outro fora dela, informando `can_manage=true` e `false` respectivamente. Uma ficha de outra empresa respondeu 404. A conferência visual no navegador ainda depende da disponibilidade da ferramenta de navegação nesta sessão.
+
 ## Pesquisa de clientes — 18/11/2026
 
 A rota `/app/clientes` abre o painel de pesquisa inspirado no modelo enviado. A API `/api/v1/customers/search` calcula valor em aberto, vencimento, atraso e situação do acordo a partir dos registros do tenant, com filtros e paginação no servidor. Administrador, Supervisor e Operador podem consultar todos os clientes do próprio tenant, inclusive quitados, suspensos e inativos. O Operador continua limitado às carteiras da equipe para registrar ocorrências e alterar fichas.
